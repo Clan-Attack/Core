@@ -3,9 +3,10 @@ package at.clanattack.impl.discord
 import at.clanattack.bootstrap.ICore
 import at.clanattack.discord.DiscordListenerTrigger
 import at.clanattack.discord.IDiscordListenerHandler
-import at.clanattack.settings.ISettingServiceProvider
+import at.clanattack.discord.IDiscordServiceProvider
 import at.clanattack.utility.IUtilityServiceProvider
 import at.clanattack.xjkl.scope.empty
+import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.hooks.IEventManager
 import java.lang.reflect.Method
@@ -40,13 +41,18 @@ class DiscordListenerHandler(private val core: ICore) : IEventManager, IDiscordL
                         declaringClass.getDeclaredConstructor(ICore::class.java).newInstance(this.core)
                     } catch (e: NoSuchMethodException) {
                         try {
-                            declaringClass.getDeclaredConstructor().newInstance()
+                            declaringClass.getDeclaredConstructor(JDA::class.java)
+                                .newInstance(this.core.getServiceProvider(IDiscordServiceProvider::class).jda)
                         } catch (ex: NoSuchMethodException) {
-                            this.core.logger.error(
-                                "Couldn't register discord listener for " + annotation.event.simpleName + " in "
-                                        + declaringClass.simpleName + " because the class doesn't have the correct constructor."
-                            )
-                            null
+                            try {
+                                declaringClass.getDeclaredConstructor().newInstance()
+                            } catch (ex: NoSuchMethodException) {
+                                this.core.logger.error(
+                                    "Couldn't register discord listener for " + annotation.event.simpleName + " in "
+                                            + declaringClass.simpleName + " because the class doesn't have the correct constructor."
+                                )
+                                null
+                            }
                         }
                     } ?: return@forEach
 
@@ -80,7 +86,11 @@ class DiscordListenerHandler(private val core: ICore) : IEventManager, IDiscordL
             }
     }
 
-    private fun shouldCall(event: Class<out GenericEvent>, methodEvent: Class<out GenericEvent>, subevents: Boolean): Boolean {
+    private fun shouldCall(
+        event: Class<out GenericEvent>,
+        methodEvent: Class<out GenericEvent>,
+        subevents: Boolean
+    ): Boolean {
         if (event == methodEvent) return true
         return methodEvent.isAssignableFrom(event) && subevents
     }

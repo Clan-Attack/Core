@@ -16,6 +16,17 @@ interface IPlayer {
 
     fun getOnlineTimeAsync(): Future<Long>
 
+    fun sendMessage(key: String, vararg placeholders: String)
+
+    fun sendTitle(
+        fadeIn: Number,
+        stay: Number,
+        fadeOut: Number,
+        title: String?,
+        subtitle: String?,
+        vararg placeholders: String
+    )
+
     fun sendActionbar(priority: ActionbarPriority, stay: Int, key: String, vararg placeholders: String)
 
     fun sendActionbar(priority: ActionbarPriority, key: String, vararg placeholders: String) =

@@ -1,21 +1,23 @@
 package at.clanattack.impl.player
 
 import at.clanattack.bootstrap.ICore
-import com.google.gson.JsonPrimitive
-import com.surrealdb.driver.model.patch.RemovePatch
 import at.clanattack.bootstrap.util.json.JsonDocument
 import at.clanattack.database.ISurrealServiceProvider
+import at.clanattack.impl.player.model.DBPlayer
+import at.clanattack.impl.player.model.PlayerDataUpdate
+import at.clanattack.message.IMessageServiceProvider
 import at.clanattack.player.IPlayer
 import at.clanattack.player.actionbar.ActionbarPriority
 import at.clanattack.xjkl.extention.supplyNullable
 import at.clanattack.xjkl.future.CompletableFuture
 import at.clanattack.xjkl.future.Future
 import at.clanattack.xjkl.future.ToUnitFuture
-import at.clanattack.impl.player.model.DBPlayer
-import at.clanattack.impl.player.model.PlayerDataUpdate
-import at.clanattack.message.IMessageServiceProvider
-import at.clanattack.utility.IUtilityServiceProvider
+import com.google.gson.JsonPrimitive
+import com.surrealdb.driver.model.patch.RemovePatch
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
+import java.time.Duration
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
@@ -49,7 +51,36 @@ class Player(
         return future
     }
 
-    override fun sendActionbar(priority: ActionbarPriority, stay: Int, key: String, vararg placeholders: String) {
+    override fun sendMessage(key: String, vararg placeholders: String) = Bukkit.getPlayer(this.uuid)!!
+        .sendMessage(this.core.getServiceProvider(IMessageServiceProvider::class).getMessage(key, *placeholders))
+
+    override fun sendTitle(
+        fadeIn: Number,
+        stay: Number,
+        fadeOut: Number,
+        title: String?,
+        subtitle: String?,
+        vararg placeholders: String
+    ) = Bukkit.getPlayer(this.uuid)!!.showTitle(
+        Title.title(
+            if (title == null) Component.text("") else this.core.getServiceProvider(IMessageServiceProvider::class)
+                .getMessage(title, *placeholders),
+            if (subtitle == null) Component.text("") else this.core.getServiceProvider(IMessageServiceProvider::class)
+                .getMessage(subtitle, *placeholders),
+            Title.Times.times(
+                Duration.ofSeconds(fadeIn.toLong()),
+                Duration.ofSeconds(stay.toLong()),
+                Duration.ofSeconds(fadeOut.toLong()),
+            )
+        )
+    )
+
+    override fun sendActionbar(
+        priority: ActionbarPriority,
+        stay: Int,
+        key: String,
+        vararg placeholders: String
+    ) {
         if (this.uuid in Actionbar && Actionbar[uuid]!!.priority.value > priority.value) return
 
         Actionbar[this.uuid] = ActionbarInformation(
