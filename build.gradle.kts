@@ -1,24 +1,72 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.10"
+    `java-library`
+    kotlin("jvm") version "1.7.20"
+    id("io.papermc.paperweight.userdev") version "1.3.8"
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "at.clanattack"
-version = "1.0-SNAPSHOT"
+version = "0.1"
 
-repositories {
-    mavenCentral()
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+allprojects {
+    apply(plugin = "kotlin")
+    apply(plugin = "java")
+    apply(plugin = "java-library")
+    apply(plugin = "io.papermc.paperweight.userdev")
+    apply(plugin = "com.github.johnrengelman.shadow")
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        paperDevBundle("1.19.2-R0.1-SNAPSHOT")
+        implementation("org.jetbrains:annotations:23.0.0")
+    }
+
+    tasks {
+        assemble {
+            dependsOn(reobfJar)
+        }
+
+        compileJava {
+            options.encoding = Charsets.UTF_8.name()
+            options.release.set(17)
+        }
+
+        javadoc {
+            options.encoding = Charsets.UTF_8.name()
+        }
+
+        processResources {
+            filteringCharset = Charsets.UTF_8.name()
+        }
+    }
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
+    // Api
+    api(project(":Api"))
+
+    // Database
+    implementation("org.java-websocket:Java-WebSocket:1.5.3")
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+bukkit {
+    main = "at.clanattack.impl.bootstrap.boot.Bootstrap"
+    name = "Clanattack-Core"
+    version = "0.1.0"
+    apiVersion = "1.19"
+    author = "CheeseTastisch"
 }
