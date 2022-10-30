@@ -1,5 +1,6 @@
 package at.clanattack.bootstrap
 
+import at.clanattack.bootstrap.plugin.Plugin
 import at.clanattack.bootstrap.provider.IServiceProvider
 import at.clanattack.bootstrap.provider.IServiceProviderRegistry
 import at.clanattack.bootstrap.util.annotation.IAnnotationScanner
@@ -37,5 +38,7 @@ interface ICore {
 
     @Contract(pure = true)
     fun <T : IServiceProvider> getServiceProvider(`class`: KClass<T>): T = serviceProviderRegistry[`class`]
+
+    fun ICore.registerPlugin(loader: ClassLoader, plugin: Plugin)
 
 }
