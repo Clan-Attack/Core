@@ -5,7 +5,6 @@ import at.clanattack.bootstrap.provider.AbstractServiceProvider
 import at.clanattack.bootstrap.provider.ServiceProvider
 import at.clanattack.database.ISurrealServiceProvider
 import at.clanattack.message.IMessageServiceProvider
-import at.clanattack.message.MessageProvider
 import at.clanattack.xjkl.future.CompletableFuture
 import at.clanattack.xjkl.future.Future
 import net.kyori.adventure.text.Component
@@ -17,8 +16,6 @@ class MessageServiceProvider(core: ICore) : AbstractServiceProvider(core), IMess
     private val messageService = MessageService(core)
 
     init {
-        MessageProvider.instance = this
-
         this.registerGlobalPlaceholder("prefix", "core.prefix")
         this.registerGlobalPlaceholder("prefix.screen", "core.prefix.screen")
     }

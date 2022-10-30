@@ -6,13 +6,12 @@ import at.clanattack.utility.inventory.CloseEvent
 import at.clanattack.utility.inventory.DismissActionType
 import at.clanattack.utility.inventory.IInventoryBuilder
 import at.clanattack.utility.item.IItemBuilder
-import at.clanattack.utility.item.createItem
-import at.clanattack.utility.item.createNullableItem
 import at.clanattack.utility.item.extention.build
 import at.clanattack.utility.item.extention.buildNullable
 import at.clanattack.utility.item.extention.nullableBuilder
 import at.clanattack.xjkl.extention.putAndGet
 import at.clanattack.impl.utility.inventory.action.ActionHandler
+import at.clanattack.utility.IUtilityServiceProvider
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.InventoryType
@@ -211,6 +210,14 @@ abstract class InventoryBuilder<Interface : IInventoryBuilder<Interface>, Type :
     }
 
     override fun build() = this.inventory
+
+    protected fun createInventory(inventory: Inventory) =
+        this.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(inventory)
+
+    protected fun createItem(item: ItemStack) =
+        this.core.getServiceProvider(IUtilityServiceProvider::class).itemHandler.createItem(item)
+
+    protected fun createNullableItem(item: ItemStack?) = if (item == null) null else createItem(item)
 
     protected fun modifyInventory(inventory: (Type) -> Unit): Interface {
         inventory(this.getInventory())

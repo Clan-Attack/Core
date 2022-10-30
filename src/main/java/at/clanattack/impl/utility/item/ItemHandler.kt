@@ -4,7 +4,6 @@ import com.destroystokyo.paper.inventory.meta.ArmorStandMeta
 import at.clanattack.bootstrap.ICore
 import at.clanattack.utility.item.IItemBuilder
 import at.clanattack.utility.item.IItemHandler
-import at.clanattack.utility.item.ItemProvider
 import at.clanattack.utility.item.variants.*
 import at.clanattack.impl.utility.item.map.MapViewBuilder
 import at.clanattack.impl.utility.item.variant.*
@@ -17,10 +16,6 @@ import org.bukkit.map.MapView
 import kotlin.reflect.KClass
 
 class ItemHandler(private val core: ICore) : IItemHandler {
-
-    init {
-        ItemProvider.instance = this
-    }
 
     override fun createItem(stack: ItemStack): IItemBuilder<*> {
         val itemMeta =

@@ -3,7 +3,6 @@ package at.clanattack.impl.utility.inventory.variant.horse
 import at.clanattack.bootstrap.ICore
 import at.clanattack.utility.inventory.variant.horse.ILlamaInventoryBuilder
 import at.clanattack.utility.item.IItemBuilder
-import at.clanattack.utility.item.createNullableItem
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.LlamaInventory

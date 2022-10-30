@@ -2,7 +2,6 @@ package at.clanattack.impl.utility.inventory.variant
 
 import at.clanattack.bootstrap.ICore
 import at.clanattack.utility.inventory.IInventoryBuilder
-import at.clanattack.utility.inventory.createInventory
 import at.clanattack.utility.inventory.variant.IDoubleChestInventoryBuilder
 import at.clanattack.impl.utility.inventory.InventoryBuilder
 import org.bukkit.block.DoubleChest

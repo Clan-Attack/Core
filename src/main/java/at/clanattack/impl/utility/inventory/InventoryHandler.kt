@@ -3,7 +3,6 @@ package at.clanattack.impl.utility.inventory
 import at.clanattack.bootstrap.ICore
 import at.clanattack.utility.inventory.IInventoryBuilder
 import at.clanattack.utility.inventory.IInventoryHandler
-import at.clanattack.utility.inventory.InventoryProvider
 import at.clanattack.utility.inventory.variant.*
 import at.clanattack.utility.inventory.variant.horse.*
 import at.clanattack.impl.utility.inventory.variant.*
@@ -15,9 +14,6 @@ import org.bukkit.inventory.*
 
 class InventoryHandler(private val core: ICore) : IInventoryHandler {
 
-    init {
-        InventoryProvider.instance = this
-    }
 
     override fun createInventory(inventory: Inventory): IInventoryBuilder<*> =
         (inventoryBuilders.values.firstOrNull { it.second.isInstance(inventory) }?.first

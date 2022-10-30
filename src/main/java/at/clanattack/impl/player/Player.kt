@@ -1,10 +1,10 @@
 package at.clanattack.impl.player
 
+import at.clanattack.bootstrap.ICore
 import com.google.gson.JsonPrimitive
 import com.surrealdb.driver.model.patch.RemovePatch
 import at.clanattack.bootstrap.util.json.JsonDocument
 import at.clanattack.database.ISurrealServiceProvider
-import at.clanattack.message.getMessage
 import at.clanattack.player.IPlayer
 import at.clanattack.player.actionbar.ActionbarPriority
 import at.clanattack.xjkl.extention.supplyNullable
@@ -13,15 +13,20 @@ import at.clanattack.xjkl.future.Future
 import at.clanattack.xjkl.future.ToUnitFuture
 import at.clanattack.impl.player.model.DBPlayer
 import at.clanattack.impl.player.model.PlayerDataUpdate
+import at.clanattack.message.IMessageServiceProvider
+import at.clanattack.utility.IUtilityServiceProvider
 import org.bukkit.Bukkit
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 class Player(
-    private val surreal: ISurrealServiceProvider,
+    private val core: ICore,
     private val uuid: UUID
 ) : IPlayer {
+
+    private val surreal: ISurrealServiceProvider
+        get() = this.core.getServiceProvider(ISurrealServiceProvider::class)
 
     override val online: Boolean
         get() = Bukkit.getOfflinePlayer(this.uuid).isOnline
@@ -48,7 +53,7 @@ class Player(
         if (this.uuid in Actionbar && Actionbar[uuid]!!.priority.value > priority.value) return
 
         Actionbar[this.uuid] = ActionbarInformation(
-            getMessage(key, *placeholders),
+            this.core.getServiceProvider(IMessageServiceProvider::class).getMessage(key, *placeholders),
             System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(stay.toLong()),
             priority
         )

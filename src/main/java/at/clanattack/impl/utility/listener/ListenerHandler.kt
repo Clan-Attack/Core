@@ -2,9 +2,10 @@ package at.clanattack.impl.utility.listener
 
 import io.github.classgraph.ClassGraph
 import at.clanattack.bootstrap.ICore
+import at.clanattack.settings.ISettingServiceProvider
+import at.clanattack.utility.IUtilityServiceProvider
 import at.clanattack.utility.listener.IListenerHandler
 import at.clanattack.utility.listener.ListenerTrigger
-import at.clanattack.utility.scope.async
 import at.clanattack.xjkl.wait.Wait
 import org.bukkit.Bukkit
 import org.bukkit.event.Event
@@ -23,7 +24,7 @@ class ListenerHandler(private val core: ICore) : IListenerHandler {
     }
 
     fun loadListeners() {
-        async {
+        this.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.async {
             this.core.logger.info("Loading listeners...")
             this.core.annotationScanner.scanMethods(ListenerTrigger::class)
                 .forEach {
@@ -70,7 +71,7 @@ class ListenerHandler(private val core: ICore) : IListenerHandler {
     }
 
     fun registerEvents() {
-        async {
+        this.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.async {
             wait.await()
 
             this.core.logger.info("Registering events...")

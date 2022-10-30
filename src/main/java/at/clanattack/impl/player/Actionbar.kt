@@ -1,8 +1,9 @@
 package at.clanattack.impl.player
 
+import at.clanattack.bootstrap.ICore
 import at.clanattack.player.actionbar.ActionbarPriority
+import at.clanattack.utility.IUtilityServiceProvider
 import at.clanattack.utility.scope.ITask
-import at.clanattack.utility.scope.timerAsync
 import at.clanattack.xjkl.scope.asExpr
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -11,6 +12,10 @@ import java.util.*
 data class ActionbarInformation(val message: Component, val endTime: Long, val priority: ActionbarPriority)
 
 object Actionbar {
+
+    internal var internalCore: ICore? = null
+    val core: ICore
+        get() = internalCore ?: throw IllegalStateException("Actionbar not initialized yet.")
 
     private var running = false
     private val actionbar = mutableMapOf<UUID, ActionbarInformation>()
@@ -40,7 +45,7 @@ object Actionbar {
     }
 
     private fun run() {
-        this.task = timerAsync(5) {
+        this.task = this.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.timerAsync(5) {
             if (actionbar.isEmpty()) {
                 stop()
                 Thread.currentThread().interrupt()

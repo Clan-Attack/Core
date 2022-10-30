@@ -2,15 +2,10 @@ package at.clanattack.impl.utility.scope
 
 import at.clanattack.bootstrap.ICore
 import at.clanattack.utility.scope.IScopeHandler
-import at.clanattack.utility.scope.ScopeProvider
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class ScopeHandler(private val core: ICore) : IScopeHandler {
-
-    init {
-        ScopeProvider.instance = this
-    }
 
     private val plugin: JavaPlugin
         get() = core.javaPlugin

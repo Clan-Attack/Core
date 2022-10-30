@@ -3,7 +3,8 @@ package at.clanattack.impl.discord
 import at.clanattack.bootstrap.ICore
 import at.clanattack.discord.DiscordListenerTrigger
 import at.clanattack.discord.IDiscordListenerHandler
-import at.clanattack.utility.scope.async
+import at.clanattack.settings.ISettingServiceProvider
+import at.clanattack.utility.IUtilityServiceProvider
 import at.clanattack.xjkl.scope.empty
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.hooks.IEventManager
@@ -15,7 +16,7 @@ class DiscordListenerHandler(private val core: ICore) : IEventManager, IDiscordL
     private val listeners = mutableMapOf<Class<out GenericEvent>, MutableList<Pair<Method, Boolean>>>()
 
     fun loadListeners() {
-        async {
+        this.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.async {
             this.core.logger.info("Loading discord listeners...")
             this.core.annotationScanner.scanMethods(DiscordListenerTrigger::class)
                 .forEach {

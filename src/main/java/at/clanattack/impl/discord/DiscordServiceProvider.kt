@@ -3,11 +3,9 @@ package at.clanattack.impl.discord
 import at.clanattack.bootstrap.ICore
 import at.clanattack.bootstrap.provider.AbstractServiceProvider
 import at.clanattack.bootstrap.provider.ServiceProvider
-import at.clanattack.discord.DiscordProvider
 import at.clanattack.discord.IDiscordServiceProvider
-import at.clanattack.message.getStringMessage
+import at.clanattack.message.IMessageServiceProvider
 import at.clanattack.settings.ISettingServiceProvider
-import at.clanattack.settings.getSetting
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
@@ -27,17 +25,18 @@ class DiscordServiceProvider(core: ICore) : AbstractServiceProvider(core), IDisc
     override val guild: Guild
         get() = internalGuild ?: throw IllegalStateException("Discord not initialized yet")
 
-    init {
-        DiscordProvider.instance = this
-    }
-
     override fun load() {
         this.internalJda =
-            JDABuilder.createDefault(getSetting("core.discord.token", String::class))
+            JDABuilder.createDefault(
+                this.core.getServiceProvider(ISettingServiceProvider::class)
+                    .getSetting("core.discord.token", String::class)
+            )
                 .setActivity(
                     Activity.of(
-                        getSetting("core.discord.activity", ActivityType.WATCHING, ActivityType::class),
-                        getStringMessage("core.discord.activity")
+                        this.core.getServiceProvider(ISettingServiceProvider::class)
+                            .getSetting("core.discord.activity", ActivityType.WATCHING, ActivityType::class),
+                        this.core.getServiceProvider(IMessageServiceProvider::class)
+                            .getStringMessage("core.discord.activity")
                     )
                 )
                 .setEventManager(listenerHandler)
@@ -46,7 +45,8 @@ class DiscordServiceProvider(core: ICore) : AbstractServiceProvider(core), IDisc
         jda.awaitReady()
 
         this.internalGuild = this.jda.getGuildById(
-            getSetting("core.discord.guild", String::class)
+            this.core.getServiceProvider(ISettingServiceProvider::class)
+                .getSetting("core.discord.guild", String::class)
                 ?: throw IllegalStateException("Discord guild id should be set")
         )
     }

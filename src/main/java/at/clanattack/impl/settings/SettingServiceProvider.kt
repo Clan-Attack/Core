@@ -8,7 +8,6 @@ import at.clanattack.bootstrap.provider.AbstractServiceProvider
 import at.clanattack.bootstrap.provider.ServiceProvider
 import at.clanattack.database.ISurrealServiceProvider
 import at.clanattack.settings.ISettingServiceProvider
-import at.clanattack.settings.SettingProvider
 import at.clanattack.xjkl.future.CompletableFuture
 import at.clanattack.xjkl.future.Future
 import at.clanattack.impl.settings.model.Setting
@@ -22,10 +21,6 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
 
     private val settingCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES)
         .build<String, String>()
-
-    init {
-        SettingProvider.instance = this
-    }
 
     override fun <T : Any> getSettingAsync(key: String, clazz: KClass<T>) =
         this.getSettingFromDb(key, null, clazz.java)

@@ -3,7 +3,6 @@ package at.clanattack.impl.utility.inventory.variant
 import at.clanattack.bootstrap.ICore
 import at.clanattack.utility.inventory.variant.IAnvilInventoryBuilder
 import at.clanattack.utility.item.IItemBuilder
-import at.clanattack.utility.item.createNullableItem
 import at.clanattack.impl.utility.inventory.InventoryBuilder
 import org.bukkit.inventory.AnvilInventory
 import org.bukkit.inventory.Inventory
