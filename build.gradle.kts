@@ -9,7 +9,6 @@ plugins {
 }
 
 group = "at.clanattack"
-version = "0.1"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
