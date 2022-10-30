@@ -5,7 +5,6 @@ import io.github.classgraph.MethodInfo
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
-@Suppress("unused")
 interface IAnnotationScanner {
 
     fun scanClasses(

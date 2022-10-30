@@ -10,7 +10,6 @@ import java.math.BigInteger
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
-@Suppress("unused")
 class JsonDocument(private var jsonObject: JsonObject) {
 
     private constructor() : this(JsonObject())

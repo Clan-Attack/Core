@@ -4,7 +4,6 @@ import at.clanattack.utility.item.IItemBuilder
 import net.kyori.adventure.text.Component
 import org.bukkit.inventory.meta.BookMeta.Generation
 
-@Suppress("unused")
 interface IBookBuilder : IItemBuilder<IBookBuilder> {
 
     val hasTitle: Boolean

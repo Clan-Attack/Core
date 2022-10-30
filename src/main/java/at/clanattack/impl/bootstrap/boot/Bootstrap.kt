@@ -3,7 +3,6 @@ package at.clanattack.impl.bootstrap.boot
 import at.clanattack.impl.bootstrap.Core
 import org.bukkit.plugin.java.JavaPlugin
 
-@Suppress("unused")
 class Bootstrap : JavaPlugin() {
 
     private val core by lazy { Core(this) }

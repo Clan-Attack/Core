@@ -4,7 +4,6 @@ import at.clanattack.utility.item.IItemBuilder
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-@Suppress("unused")
 interface ISuspiciousStewBuilder : IItemBuilder<ISuspiciousStewBuilder> {
 
     val hasCustomEffects: Boolean

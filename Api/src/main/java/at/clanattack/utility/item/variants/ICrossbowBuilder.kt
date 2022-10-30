@@ -3,7 +3,6 @@ package at.clanattack.utility.item.variants
 import at.clanattack.utility.item.IItemBuilder
 import org.bukkit.inventory.ItemStack
 
-@Suppress("unused")
 interface ICrossbowBuilder : IItemBuilder<ICrossbowBuilder> {
 
     val hasChargedProjectiles: Boolean

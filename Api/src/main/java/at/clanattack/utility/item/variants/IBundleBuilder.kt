@@ -3,7 +3,6 @@ package at.clanattack.utility.item.variants
 import at.clanattack.utility.item.IItemBuilder
 import org.bukkit.inventory.ItemStack
 
-@Suppress("unused")
 interface IBundleBuilder : IItemBuilder<IBundleBuilder> {
 
     val hasItems: Boolean

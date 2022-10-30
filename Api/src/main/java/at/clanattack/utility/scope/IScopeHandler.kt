@@ -1,6 +1,5 @@
 package at.clanattack.utility.scope
 
-@Suppress("unused")
 interface IScopeHandler {
 
     fun later(delay: Long, task: () -> Unit): ITask

@@ -4,7 +4,7 @@ import at.clanattack.xjkl.scope.withThis
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate")
 open class Future<T>(protected val future: CompletableFuture<T>) {
 
     constructor(value: T): this(CompletableFuture()) {

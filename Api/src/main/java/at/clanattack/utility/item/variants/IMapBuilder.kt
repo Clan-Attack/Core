@@ -5,7 +5,6 @@ import at.clanattack.utility.item.map.IMapViewBuilder
 import org.bukkit.Color
 import org.bukkit.map.MapView
 
-@Suppress("unused")
 interface IMapBuilder : IItemBuilder<IMapBuilder> {
 
     val mapView: MapView?

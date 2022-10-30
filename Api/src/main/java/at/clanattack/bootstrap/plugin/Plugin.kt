@@ -4,6 +4,7 @@ import at.clanattack.bootstrap.ICore
 import at.clanattack.top.TopCore
 import org.bukkit.plugin.java.JavaPlugin
 
+@Suppress("EmptyMethod")
 open class Plugin : JavaPlugin() {
 
     protected val core: ICore

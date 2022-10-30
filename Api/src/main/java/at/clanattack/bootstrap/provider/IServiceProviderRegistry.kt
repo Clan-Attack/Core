@@ -2,7 +2,6 @@ package at.clanattack.bootstrap.provider
 
 import kotlin.reflect.KClass
 
-@Suppress("unused")
 interface IServiceProviderRegistry {
 
     fun getKotlinServiceProviders(): Map<KClass<out IServiceProvider>, AbstractServiceProvider> =

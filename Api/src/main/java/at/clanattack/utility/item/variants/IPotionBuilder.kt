@@ -6,7 +6,6 @@ import org.bukkit.potion.PotionData
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-@Suppress("unused")
 interface IPotionBuilder : IItemBuilder<IPotionBuilder> {
 
     val basePotionData: PotionData

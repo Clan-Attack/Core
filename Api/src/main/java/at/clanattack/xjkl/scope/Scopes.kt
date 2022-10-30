@@ -1,4 +1,3 @@
-@file:Suppress("unused")
 package at.clanattack.xjkl.scope
 
 import org.jetbrains.annotations.Contract

@@ -1,12 +1,11 @@
 package at.clanattack.impl.utility.listener
 
-import io.github.classgraph.ClassGraph
 import at.clanattack.bootstrap.ICore
-import at.clanattack.settings.ISettingServiceProvider
 import at.clanattack.utility.IUtilityServiceProvider
 import at.clanattack.utility.listener.IListenerHandler
 import at.clanattack.utility.listener.ListenerTrigger
 import at.clanattack.xjkl.wait.Wait
+import io.github.classgraph.ClassGraph
 import org.bukkit.Bukkit
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority

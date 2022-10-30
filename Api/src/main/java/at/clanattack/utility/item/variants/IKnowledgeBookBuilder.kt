@@ -3,7 +3,6 @@ package at.clanattack.utility.item.variants
 import at.clanattack.utility.item.IItemBuilder
 import org.bukkit.NamespacedKey
 
-@Suppress("unused")
 interface IKnowledgeBookBuilder : IItemBuilder<IKnowledgeBookBuilder> {
 
     val hasRecipes: Boolean

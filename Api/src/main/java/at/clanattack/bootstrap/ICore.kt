@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Contract
 import java.io.File
 import kotlin.reflect.KClass
 
-@Suppress("unused")
 interface ICore {
 
     val annotationScanner: IAnnotationScanner

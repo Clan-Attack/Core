@@ -3,7 +3,6 @@ package at.clanattack.utility.item.variants
 import at.clanattack.utility.item.IItemBuilder
 import org.bukkit.FireworkEffect
 
-@Suppress("unused")
 interface IFireworkBuilder : IItemBuilder<IFireworkBuilder> {
 
     val effectSize: Int

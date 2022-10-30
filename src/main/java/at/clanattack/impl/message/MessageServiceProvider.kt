@@ -24,7 +24,7 @@ class MessageServiceProvider(core: ICore) : AbstractServiceProvider(core), IMess
         val completableFuture = CompletableFuture<Component>()
 
         this.messageService.getMessageAsync(key, placeholders)
-            .then { it -> completableFuture.complete(this.replaceColors(it, '&')) }
+            .then { completableFuture.complete(this.replaceColors(it, '&')) }
 
         return completableFuture
     }

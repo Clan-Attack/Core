@@ -3,7 +3,6 @@ package at.clanattack.utility.item.variants
 import at.clanattack.utility.item.IItemBuilder
 import org.bukkit.block.banner.Pattern
 
-@Suppress("unused")
 interface IBannerBuilder : IItemBuilder<IBannerBuilder> {
 
     val patterns: List<Pattern>
