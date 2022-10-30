@@ -55,6 +55,14 @@ allprojects {
     }
 }
 
+dependencies {
+    // Api
+    api(project(":Api"))
+
+    // Database
+    implementation("org.java-websocket:Java-WebSocket:1.5.3")
+}
+
 bukkit {
     main = "at.clanattack.impl.bootstrap.boot.Bootstrap"
     name = "Clanattack-Core"

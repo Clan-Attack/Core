@@ -5,15 +5,14 @@ plugins {
 group 'at.clanattack'
 version '0.1'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
+    // Bootstrap
+    api("io.github.classgraph:classgraph:4.8.149")
+    api("com.google.code.gson:gson:2.10")
 
-test {
-    useJUnitPlatform()
+    // Database
+    api(files("lib/surreal.jar"))
+
+    // Discord
+    api("net.dv8tion:JDA:5.0.0-alpha.22")
 }
