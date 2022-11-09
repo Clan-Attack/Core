@@ -1,4 +1,4 @@
-package at.clanattack.xjkl.json
+package at.clanattack.bootstrap.util.json
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
