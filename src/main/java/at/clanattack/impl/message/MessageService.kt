@@ -70,7 +70,7 @@ class MessageService(private val core: ICore) {
         if (message != null) return future.complete(message)
 
         this.core.getServiceProvider(ISurrealServiceProvider::class)
-            .select<Message>("message:`${key.replace(".", "_")}`")
+            .select<Message>("message:`${key}`")
             .then { result ->
                 if (result.isEmpty()) {
                     future.complete(null)
