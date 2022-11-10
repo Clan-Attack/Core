@@ -26,6 +26,8 @@ class DiscordServiceProvider(core: ICore) : AbstractServiceProvider(core), IDisc
         get() = internalGuild ?: throw IllegalStateException("Discord not initialized yet")
 
     override fun load() {
+        listenerHandler.loadListeners()
+
         this.internalJda =
             JDABuilder.createDefault(
                 this.core.getServiceProvider(ISettingServiceProvider::class)

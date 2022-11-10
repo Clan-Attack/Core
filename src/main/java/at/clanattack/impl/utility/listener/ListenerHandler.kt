@@ -16,10 +16,12 @@ class ListenerHandler(private val core: ICore) : IListenerHandler {
 
     private val instances = mutableMapOf<Class<*>, Any>()
     private val listeners = mutableMapOf<Class<out Event>, MutableList<Pair<Method, Boolean>>>()
-    private var lock = Lock()
+
+    private var loadLock = Lock()
+    private var registerLock = Lock()
 
     fun registerBlock() {
-        Bukkit.getPluginManager().registerEvents(PlayerLoginListener(lock, this.core), this.core.javaPlugin)
+        Bukkit.getPluginManager().registerEvents(PlayerLoginListener(registerLock, this.core), this.core.javaPlugin)
     }
 
     fun loadListeners() {
@@ -64,14 +66,14 @@ class ListenerHandler(private val core: ICore) : IListenerHandler {
                 }
             this.core.logger.info("Loaded ${listeners.size} listeners.")
 
-            lock.signal()
+            loadLock.signal()
         }
 
     }
 
     fun registerEvents() {
         this.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.async {
-            lock.await()
+            loadLock.await()
 
             this.core.logger.info("Registering events...")
 
@@ -109,6 +111,8 @@ class ListenerHandler(private val core: ICore) : IListenerHandler {
                 }
 
             this.core.logger.info("Registered $counter Events.")
+
+            registerLock.signal()
         }
     }
 
