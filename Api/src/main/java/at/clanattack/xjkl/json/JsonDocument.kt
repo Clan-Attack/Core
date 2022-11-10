@@ -1,4 +1,4 @@
-package at.clanattack.bootstrap.util.json
+package at.clanattack.xjkl.json
 
 import com.google.gson.*
 import at.clanattack.xjkl.scope.supplyNullable

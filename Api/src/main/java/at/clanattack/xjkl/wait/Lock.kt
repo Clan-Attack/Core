@@ -3,7 +3,7 @@ package at.clanattack.xjkl.wait
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
-class Wait {
+class Lock {
 
     private var run = false
     private val lock = ReentrantLock()

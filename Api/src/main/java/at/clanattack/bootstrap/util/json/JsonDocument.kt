@@ -1,4 +1,4 @@
-package at.clanattack.xjkl.json
+package at.clanattack.bootstrap.util.json
 
 import com.google.gson.*
 import at.clanattack.xjkl.scope.supplyNullable
@@ -10,6 +10,7 @@ import java.math.BigInteger
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
+@Deprecated("Use the JsonDocument from XJKL", ReplaceWith("JsonDocument", "at.clanattack.xjkl.json.JsonDocument"))
 class JsonDocument(private var jsonObject: JsonObject) {
 
     private constructor() : this(JsonObject())

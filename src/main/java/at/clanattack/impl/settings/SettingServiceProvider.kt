@@ -3,13 +3,15 @@ package at.clanattack.impl.settings
 import at.clanattack.bootstrap.ICore
 import at.clanattack.bootstrap.provider.AbstractServiceProvider
 import at.clanattack.bootstrap.provider.ServiceProvider
-import at.clanattack.bootstrap.util.json.JsonDocument
+import at.clanattack.xjkl.json.JsonDocument
 import at.clanattack.database.ISurrealServiceProvider
 import at.clanattack.impl.settings.model.Setting
 import at.clanattack.settings.ISettingServiceProvider
 import at.clanattack.xjkl.future.CompletableFuture
 import at.clanattack.xjkl.future.Future
 import at.clanattack.xjkl.future.ToUnitFuture
+import at.clanattack.xjkl.scope.fromT
+import at.clanattack.xjkl.scope.toT
 import com.google.common.cache.CacheBuilder
 import com.google.gson.JsonPrimitive
 import java.util.concurrent.TimeUnit
@@ -26,7 +28,7 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
             this.core.getServiceProvider(ISurrealServiceProvider::class)
                 .update(
                     "setting:${key.replace(".", "_")}",
-                    Setting(JsonDocument.gson.toJson(value))
+                    Setting(value.fromT())
                 )
         )
     }
@@ -44,7 +46,7 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
     private fun <T> getSettingFromDb(key: String, default: T?, clazz: Class<T>): Future<T?> {
         val future = CompletableFuture<T?>()
         val setting = settingCache.getIfPresent(key)
-        if (setting != null) return future.complete(parse(setting, clazz))
+        if (setting != null) return future.complete(setting.toT(clazz))
 
         this.core.getServiceProvider(ISurrealServiceProvider::class)
             .select("setting:${key.replace(".", "_")}", Setting::class).then {
@@ -53,15 +55,10 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
                     return@then
                 }
 
-                future.complete(parse(it[0].setting, clazz))
+                future.complete(it[0].setting.toT(clazz) ?: default)
             }
 
         return future
-    }
-
-    private fun <T> parse(value: String?, clazz: Class<T>): T? {
-        if (value == null) return null
-        return JsonDocument.gson.fromJson(JsonPrimitive(value), clazz)
     }
 
 }

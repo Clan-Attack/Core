@@ -1,17 +1,21 @@
 package at.clanattack.impl.player
 
 import at.clanattack.bootstrap.ICore
-import at.clanattack.bootstrap.util.json.JsonDocument
+import at.clanattack.xjkl.json.JsonDocument
 import at.clanattack.database.ISurrealServiceProvider
 import at.clanattack.impl.player.model.DBPlayer
 import at.clanattack.impl.player.model.PlayerDataUpdate
 import at.clanattack.message.IMessageServiceProvider
 import at.clanattack.player.IPlayer
 import at.clanattack.player.actionbar.ActionbarPriority
+import at.clanattack.xjkl.extention.replaceLast
+import at.clanattack.xjkl.extention.supply
 import at.clanattack.xjkl.extention.supplyNullable
 import at.clanattack.xjkl.future.CompletableFuture
 import at.clanattack.xjkl.future.Future
 import at.clanattack.xjkl.future.ToUnitFuture
+import at.clanattack.xjkl.scope.fromT
+import at.clanattack.xjkl.scope.toT
 import com.google.gson.JsonPrimitive
 import com.surrealdb.driver.model.patch.RemovePatch
 import net.kyori.adventure.text.Component
@@ -92,14 +96,14 @@ class Player(
 
     override fun <T : Any> getPlayerDataAsync(key: String, clazz: KClass<T>): Future<T?> {
         val future = CompletableFuture<T?>()
-        this.getPlayerDataAsync().then { data -> future.complete(data[key].supplyNullable { toT(it, clazz.java) }) }
+        this.getPlayerDataAsync().then { data -> future.complete(data[key].supplyNullable { it.toT(clazz.java) }) }
         return future
     }
 
     override fun <T : Any> getPlayerDataAsync(key: String, default: T, clazz: KClass<T>): Future<T> {
         val future = CompletableFuture<T>()
         this.getPlayerDataAsync()
-            .then { data -> future.complete(data[key].supplyNullable { toT(it, clazz.java) } ?: default) }
+            .then { data -> future.complete(data[key].supplyNullable { it.toT(clazz.java) } ?: default) }
         return future
     }
 
@@ -122,7 +126,7 @@ class Player(
         return ToUnitFuture(
             this.surreal.change(
                 "player:`${this.uuid}`",
-                PlayerDataUpdate.create(key, toString(value)),
+                PlayerDataUpdate.create(key, value.fromT()),
                 DBPlayer::class
             )
         )
@@ -141,19 +145,6 @@ class Player(
     companion object {
 
         val joinTime = mutableMapOf<UUID, Long>()
-
-        private fun <T> toT(value: String?, clazz: Class<T>): T? {
-            if (value == null) return null
-
-            val json = JsonPrimitive(value)
-            return JsonDocument.gson.fromJson(json, clazz)
-        }
-
-        private fun toString(value: Any?): String? {
-            if (value == null) return null
-
-            return JsonDocument.gson.toJson(value)
-        }
 
     }
 
