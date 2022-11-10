@@ -25,7 +25,7 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
         return ToUnitFuture(
             this.core.getServiceProvider(ISurrealServiceProvider::class)
                 .update(
-                    "setting:`${key.replace(".", "_")}`",
+                    "setting:`${key}`",
                     Setting(value.fromT())
                 )
         )
@@ -47,7 +47,7 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
         if (setting != null) return future.complete(setting.toT(clazz))
 
         this.core.getServiceProvider(ISurrealServiceProvider::class)
-            .select("setting:`${key.replace(".", "_")}`", Setting::class).then {
+            .select("setting:`${key}`", Setting::class).then {
                 if (it.isEmpty()) {
                     future.complete(default)
                     return@then
