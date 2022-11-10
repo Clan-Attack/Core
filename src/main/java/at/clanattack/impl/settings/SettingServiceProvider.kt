@@ -3,7 +3,6 @@ package at.clanattack.impl.settings
 import at.clanattack.bootstrap.ICore
 import at.clanattack.bootstrap.provider.AbstractServiceProvider
 import at.clanattack.bootstrap.provider.ServiceProvider
-import at.clanattack.xjkl.json.JsonDocument
 import at.clanattack.database.ISurrealServiceProvider
 import at.clanattack.impl.settings.model.Setting
 import at.clanattack.settings.ISettingServiceProvider
@@ -13,7 +12,6 @@ import at.clanattack.xjkl.future.ToUnitFuture
 import at.clanattack.xjkl.scope.fromT
 import at.clanattack.xjkl.scope.toT
 import com.google.common.cache.CacheBuilder
-import com.google.gson.JsonPrimitive
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
@@ -27,7 +25,7 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
         return ToUnitFuture(
             this.core.getServiceProvider(ISurrealServiceProvider::class)
                 .update(
-                    "setting:${key.replace(".", "_")}",
+                    "setting:`${key.replace(".", "_")}`",
                     Setting(value.fromT())
                 )
         )
@@ -49,7 +47,7 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
         if (setting != null) return future.complete(setting.toT(clazz))
 
         this.core.getServiceProvider(ISurrealServiceProvider::class)
-            .select("setting:${key.replace(".", "_")}", Setting::class).then {
+            .select("setting:`${key.replace(".", "_")}`", Setting::class).then {
                 if (it.isEmpty()) {
                     future.complete(default)
                     return@then
