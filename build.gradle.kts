@@ -9,7 +9,15 @@ plugins {
 }
 
 group = "at.clanattack"
-version = "0.1"
+version = "0.2"
+
+bukkit {
+    main = "at.clanattack.impl.bootstrap.boot.Bootstrap"
+    name = "Clanattack-Core"
+    version = "0.2"
+    apiVersion = "1.19"
+    author = "CheeseTastisch"
+}
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
@@ -17,7 +25,6 @@ java {
 
 allprojects {
     apply(plugin = "kotlin")
-    apply(plugin = "java")
     apply(plugin = "java-library")
     apply(plugin = "io.papermc.paperweight.userdev")
     apply(plugin = "com.github.johnrengelman.shadow")
@@ -28,7 +35,7 @@ allprojects {
 
     dependencies {
         paperDevBundle("1.19.2-R0.1-SNAPSHOT")
-        implementation("org.jetbrains:annotations:23.0.0")
+        compileOnly("org.jetbrains:annotations:23.0.0")
     }
 
     tasks {
@@ -61,12 +68,4 @@ dependencies {
 
     // Database
     implementation("org.java-websocket:Java-WebSocket:1.5.3")
-}
-
-bukkit {
-    main = "at.clanattack.impl.bootstrap.boot.Bootstrap"
-    name = "Clanattack-Core"
-    version = "0.1.0"
-    apiVersion = "1.19"
-    author = "CheeseTastisch"
 }

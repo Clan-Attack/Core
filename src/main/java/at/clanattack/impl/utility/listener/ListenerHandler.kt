@@ -4,7 +4,7 @@ import at.clanattack.bootstrap.ICore
 import at.clanattack.utility.IUtilityServiceProvider
 import at.clanattack.utility.listener.IListenerHandler
 import at.clanattack.utility.listener.ListenerTrigger
-import at.clanattack.xjkl.wait.Wait
+import at.clanattack.xjkl.wait.Lock
 import io.github.classgraph.ClassGraph
 import org.bukkit.Bukkit
 import org.bukkit.event.Event
@@ -16,10 +16,10 @@ class ListenerHandler(private val core: ICore) : IListenerHandler {
 
     private val instances = mutableMapOf<Class<*>, Any>()
     private val listeners = mutableMapOf<Class<out Event>, MutableList<Pair<Method, Boolean>>>()
-    private var wait = Wait()
+    private var lock = Lock()
 
     fun registerBlock() {
-        Bukkit.getPluginManager().registerEvents(PlayerJoinListener(wait, this.core), this.core.javaPlugin)
+        Bukkit.getPluginManager().registerEvents(PlayerLoginListener(lock, this.core), this.core.javaPlugin)
     }
 
     fun loadListeners() {
@@ -64,14 +64,14 @@ class ListenerHandler(private val core: ICore) : IListenerHandler {
                 }
             this.core.logger.info("Loaded ${listeners.size} listeners.")
 
-            wait.signal()
+            lock.signal()
         }
 
     }
 
     fun registerEvents() {
         this.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.async {
-            wait.await()
+            lock.await()
 
             this.core.logger.info("Registering events...")
 

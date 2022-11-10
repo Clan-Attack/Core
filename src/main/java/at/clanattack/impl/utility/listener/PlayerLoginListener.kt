@@ -2,19 +2,21 @@ package at.clanattack.impl.utility.listener
 
 import at.clanattack.bootstrap.ICore
 import at.clanattack.message.IMessageServiceProvider
-import at.clanattack.xjkl.wait.Wait
+import at.clanattack.xjkl.wait.Lock
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerLoginEvent
 
-class PlayerJoinListener(private val wait: Wait, private val core: ICore) : Listener {
+class PlayerLoginListener(private val lock: Lock, private val core: ICore) : Listener {
 
     @EventHandler
-    fun playerJoin(event: PlayerJoinEvent) {
-        if(wait.isFinished) return
+    fun playerJoin(event: PlayerLoginEvent) {
+        if (lock.isFinished) return
 
-        event.player.kick(this.core.getServiceProvider(IMessageServiceProvider::class)
-            .getMessage("core.utility.notLoaded.kick"))
+        event.disallow(
+            PlayerLoginEvent.Result.KICK_OTHER,
+            this.core.getServiceProvider(IMessageServiceProvider::class).getMessage("core.utility.notLoaded.kick")
+        )
     }
 
 }
