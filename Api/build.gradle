@@ -15,4 +15,6 @@ dependencies {
 
     // Discord
     api("net.dv8tion:JDA:5.0.0-alpha.22")
+    api("com.github.minndevelopment:jda-ktx:0.9.6-alpha.22")
+    api("com.github.MinnDevelopment:jda-reactor:1.5.0")
 }

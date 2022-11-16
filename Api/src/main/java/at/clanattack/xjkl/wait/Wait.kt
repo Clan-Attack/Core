@@ -1,9 +1,11 @@
 package at.clanattack.xjkl.wait
 
+import org.jetbrains.annotations.ApiStatus
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 @Deprecated("In favor of Lock", ReplaceWith("Lock"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.4")
 class Wait {
 
     private var run = false
