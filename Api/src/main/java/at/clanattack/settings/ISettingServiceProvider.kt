@@ -20,3 +20,8 @@ interface ISettingServiceProvider : IServiceProvider {
     fun <T : Any> getSettingAsync(key: String, default: T, clazz: KClass<T>): Future<T>
 
 }
+
+// Extension
+inline fun <reified T : Any> ISettingServiceProvider.getSetting(key: String) = this.getSetting(key, T::class)
+
+inline fun <reified T : Any> ISettingServiceProvider.getSettingAsync(key: String) = this.getSettingAsync(key, T::class)

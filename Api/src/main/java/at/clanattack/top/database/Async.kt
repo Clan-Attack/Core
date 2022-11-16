@@ -8,7 +8,8 @@ import at.clanattack.top.bootstrap.getServiceProvider
 import com.surrealdb.driver.model.patch.Patch
 import kotlin.reflect.KClass
 
-private val provider = getServiceProvider<ISurrealServiceProvider>()
+private val provider: ISurrealServiceProvider
+    get() = getServiceProvider()
 
 fun letDatabase(key: String, value: String) = provider.let(key, value)
 

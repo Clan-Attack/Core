@@ -1,12 +1,14 @@
 package at.clanattack.top.bootstrap
 
+import at.clanattack.bootstrap.util.annotation.IAnnotationScanner
 import at.clanattack.bootstrap.util.log.ILogger
 import at.clanattack.top.TopCore
 import io.github.classgraph.ClassInfo
 import io.github.classgraph.MethodInfo
 import kotlin.reflect.KClass
 
-private val scanner = TopCore.core.annotationScanner
+private val scanner: IAnnotationScanner
+    get() = TopCore.core.annotationScanner
 
 fun scanClasses(
     annotation: KClass<out Annotation>,
