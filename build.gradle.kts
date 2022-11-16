@@ -32,6 +32,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://jitpack.io/")
+        maven("https://maven.clan-attack.at/releases")
     }
 
     dependencies {
