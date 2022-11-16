@@ -2,6 +2,7 @@ package at.clanattack.impl.utility.command
 
 import io.github.classgraph.ClassGraph
 import at.clanattack.bootstrap.ICore
+import at.clanattack.impl.bootstrap.util.annotation.AnnotationScanner
 import at.clanattack.message.IMessageServiceProvider
 import at.clanattack.utility.command.Command
 import at.clanattack.utility.command.ICommandHandler
@@ -20,11 +21,15 @@ class CommandHandler(private val core: ICore) : ICommandHandler {
     fun registerCommands() {
         this.core.logger.info("Registering commands...")
 
-        ClassGraph()
-            .enableClassInfo()
-            .scan()
-            .getClassInfo(Command::class.java.name)
-            .subclasses
+        (this.core.annotationScanner as AnnotationScanner).loaders.map {
+            ClassGraph()
+                .overrideClassLoaders(it)
+                .enableClassInfo()
+                .scan()
+                .getClassInfo(Command::class.java.name)
+                .subclasses
+        }
+            .flatten()
             .asSequence()
             .filter { !it.isAbstract }
             .map { it.loadClass() }
