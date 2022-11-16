@@ -19,9 +19,6 @@ class DiscordServiceProvider(core: ICore) : AbstractServiceProvider(core), IDisc
     private var internalJda: JDA? = null
     private var internalGuild: Guild? = null
 
-    @Deprecated("Replaced by the JDA-reactor event handler", level = DeprecationLevel.ERROR)
-    override val listenerHandler = DiscordListenerHandler(core)
-
     override val jda: JDA
         get() = internalJda ?: throw IllegalStateException("Discord not initialized yet")
 
