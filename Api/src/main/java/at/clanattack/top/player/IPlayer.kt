@@ -9,10 +9,10 @@ import org.bukkit.entity.Player
 
 val OfflinePlayer.iPlayer: IPlayer
     get() {
-        if (!TopCore.topCore.getServiceProvider(IPlayerServiceProvider::class).existsPlayer(this.uniqueId))
-            TopCore.topCore.getServiceProvider(IPlayerServiceProvider::class).createPlayer(this.uniqueId).getSync()
+        if (!TopCore.core.getServiceProvider(IPlayerServiceProvider::class).existsPlayer(this.uniqueId))
+            TopCore.core.getServiceProvider(IPlayerServiceProvider::class).createPlayer(this.uniqueId).getSync()
 
-        return TopCore.topCore.getServiceProvider(IPlayerServiceProvider::class).getPlayer(this.uniqueId)
+        return TopCore.core.getServiceProvider(IPlayerServiceProvider::class).getPlayer(this.uniqueId)
             ?: throw IllegalStateException("After creation of player the player should exist")
     }
 
