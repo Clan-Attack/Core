@@ -38,7 +38,7 @@ class DiscordServiceProvider(core: ICore) : AbstractServiceProvider(core), IDisc
             setActivity(
                 Activity.of(
                     core.getServiceProvider(ISettingServiceProvider::class)
-                        .getSetting("core.discord.activity", ActivityType.WATCHING, ActivityType::class),
+                        .getSetting("core.discord.activity", ActivityType.WATCHING),
                     core.getServiceProvider(IMessageServiceProvider::class).getStringMessage("core.discord.activity")
                 )
             )
