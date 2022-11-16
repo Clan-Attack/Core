@@ -9,7 +9,7 @@ fun <T> String.toT(clazz: Class<T>) : T{
     return JsonDocument.gson.fromJson(json, clazz)
 }
 
-fun Any.fromT(): String = this.fromT()!!
+fun Any.fromT(): String = this.fromUnsafeT()!!
 
 fun Any?.fromUnsafeT(): String? {
     if (this == null) return null

@@ -3,11 +3,11 @@ plugins {
 }
 
 group 'at.clanattack'
-version '0.2'
+version '0.3'
 
 dependencies {
     // Bootstrap
-    api("io.github.classgraph:classgraph:4.8.149")
+    api("io.github.classgraph:classgraph:4.8.150")
     api("com.google.code.gson:gson:2.10")
 
     // Database
@@ -15,4 +15,10 @@ dependencies {
 
     // Discord
     api("net.dv8tion:JDA:5.0.0-alpha.22")
+    api("com.github.minndevelopment:jda-ktx:0.9.6-alpha.22")
+    api("com.github.minndevelopment:jda-reactor:1.5.1")
+
+    // Temporarily until jda-reactor:1.5.1 is officially released
+    api("io.projectreactor:reactor-core:3.5.0")
+    api("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.0")
 }

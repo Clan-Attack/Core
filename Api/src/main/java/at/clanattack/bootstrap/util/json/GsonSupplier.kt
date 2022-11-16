@@ -2,8 +2,10 @@ package at.clanattack.bootstrap.util.json
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import org.jetbrains.annotations.ApiStatus
 
 @Deprecated("Use the GsonSupplier from XJKL", ReplaceWith("GsonSupplier", "at.clanattack.xjkl.json.GsonSupplier"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.4")
 class GsonSupplier {
 
     private val typeAdapters: MutableMap<Class<*>, Any> = HashMap()

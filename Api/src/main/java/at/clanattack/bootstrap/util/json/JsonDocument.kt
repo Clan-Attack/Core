@@ -3,6 +3,7 @@ package at.clanattack.bootstrap.util.json
 import com.google.gson.*
 import at.clanattack.xjkl.scope.supplyNullable
 import at.clanattack.xjkl.scope.withThis
+import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import java.io.*
 import java.math.BigDecimal
@@ -11,6 +12,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
 @Deprecated("Use the JsonDocument from XJKL", ReplaceWith("JsonDocument", "at.clanattack.xjkl.json.JsonDocument"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.4")
 class JsonDocument(private var jsonObject: JsonObject) {
 
     private constructor() : this(JsonObject())
