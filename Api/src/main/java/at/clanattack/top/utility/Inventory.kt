@@ -8,36 +8,36 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 
 fun createInventory(inventory: Inventory) =
-    TopCore.topCore.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(inventory)
+    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(inventory)
 
 fun createInventory(holder: InventoryHolder?, type: InventoryType) =
-    TopCore.topCore.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(holder, type)
+    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(holder, type)
 
 fun createInventory(holder: InventoryHolder?, type: InventoryType, title: Component) =
-    TopCore.topCore.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(
+    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(
         holder,
         type,
         title
     )
 
 fun createInventory(holder: InventoryHolder?, rows: Int) =
-    TopCore.topCore.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(holder, rows)
+    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(holder, rows)
 
 fun createInventory(holder: InventoryHolder?, rows: Int, title: Component) =
-    TopCore.topCore.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(
+    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(
         holder,
         rows,
         title
     )
 
 fun createInventory(type: InventoryType) =
-    TopCore.topCore.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(type)
+    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(type)
 
 fun createInventory(type: InventoryType, title: Component) =
-    TopCore.topCore.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(type, title)
+    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(type, title)
 
 fun createInventory(rows: Int) =
-    TopCore.topCore.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(rows)
+    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(rows)
 
 fun createInventory(rows: Int, title: Component) =
-    TopCore.topCore.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(rows, title)
+    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).inventoryHandler.createInventory(rows, title)

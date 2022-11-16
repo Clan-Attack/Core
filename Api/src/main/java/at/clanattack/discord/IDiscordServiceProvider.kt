@@ -11,7 +11,4 @@ interface IDiscordServiceProvider : IServiceProvider {
     val guild: Guild
     val eventManager: ReactiveEventManager
 
-    @Deprecated("Replaced by the JDA-reactor event handler", level = DeprecationLevel.ERROR)
-    val listenerHandler: IDiscordListenerHandler
-
 }

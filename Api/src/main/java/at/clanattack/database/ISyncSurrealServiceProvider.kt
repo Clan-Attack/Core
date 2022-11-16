@@ -26,6 +26,8 @@ interface ISyncSurrealServiceProvider : IServiceProvider {
 
     fun <T : Any, P : Any> change(thing: String, data: T, type: Class<P>): List<P>
 
+    fun <T : Any, P : Any> change(thing: String, data: T, type: KClass<P>) = this.change(thing, data, type.java)
+
     fun patch(thing: String, patch: List<Patch>)
 
     fun delete(thing: String)

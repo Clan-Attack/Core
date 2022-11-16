@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin
 open class Plugin : JavaPlugin() {
 
     protected val core: ICore
-        get() = TopCore.topCore
+        get() = TopCore.core
 
     override fun onLoad() {
         try {
