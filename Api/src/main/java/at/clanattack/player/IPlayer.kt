@@ -2,9 +2,20 @@ package at.clanattack.player
 
 import at.clanattack.player.actionbar.ActionbarPriority
 import at.clanattack.xjkl.future.Future
+import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
+import java.util.UUID
 import kotlin.reflect.KClass
 
 interface IPlayer {
+
+    val uuid: UUID
+
+    val name: String
+
+    val bukkit: Player?
+
+    val offlineBukkit: OfflinePlayer
 
     val online: Boolean
 

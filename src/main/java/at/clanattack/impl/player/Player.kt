@@ -1,26 +1,25 @@
 package at.clanattack.impl.player
 
 import at.clanattack.bootstrap.ICore
-import at.clanattack.xjkl.json.JsonDocument
 import at.clanattack.database.ISurrealServiceProvider
 import at.clanattack.impl.player.model.DBPlayer
 import at.clanattack.impl.player.model.PlayerDataUpdate
 import at.clanattack.message.IMessageServiceProvider
 import at.clanattack.player.IPlayer
 import at.clanattack.player.actionbar.ActionbarPriority
-import at.clanattack.xjkl.extention.replaceLast
-import at.clanattack.xjkl.extention.supply
+import at.clanattack.utility.IUtilityServiceProvider
 import at.clanattack.xjkl.extention.supplyNullable
 import at.clanattack.xjkl.future.CompletableFuture
 import at.clanattack.xjkl.future.Future
 import at.clanattack.xjkl.future.ToUnitFuture
 import at.clanattack.xjkl.scope.fromT
 import at.clanattack.xjkl.scope.toT
-import com.google.gson.JsonPrimitive
 import com.surrealdb.driver.model.patch.RemovePatch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
 import java.time.Duration
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -28,11 +27,21 @@ import kotlin.reflect.KClass
 
 class Player(
     private val core: ICore,
-    private val uuid: UUID
+    override val uuid: UUID
 ) : IPlayer {
 
     private val surreal: ISurrealServiceProvider
         get() = this.core.getServiceProvider(ISurrealServiceProvider::class)
+
+    override val name: String
+        get() = this.core.getServiceProvider(IUtilityServiceProvider::class).uuidFetcher.getName(this.uuid)
+            ?: throw java.lang.IllegalStateException("UUID doesn'T exist")
+
+    override val bukkit: Player?
+        get() = Bukkit.getPlayer(this.uuid)
+
+    override val offlineBukkit: OfflinePlayer
+        get() = Bukkit.getOfflinePlayer(this.uuid)
 
     override val online: Boolean
         get() = Bukkit.getOfflinePlayer(this.uuid).isOnline
