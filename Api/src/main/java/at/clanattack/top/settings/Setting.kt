@@ -1,4 +1,4 @@
-package at.clanattack.top.setting
+package at.clanattack.top.settings
 
 import at.clanattack.settings.ISettingServiceProvider
 import at.clanattack.settings.getSetting
