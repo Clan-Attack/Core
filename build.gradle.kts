@@ -9,12 +9,12 @@ plugins {
 }
 
 group = "at.clanattack"
-version = "0.2.1"
+version = "0.3"
 
 bukkit {
     main = "at.clanattack.impl.bootstrap.boot.Bootstrap"
     name = "Clanattack-Core"
-    version = "0.2.1"
+    version = "0.3"
     apiVersion = "1.19"
     author = "CheeseTastisch"
 }
