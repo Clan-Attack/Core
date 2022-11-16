@@ -2,6 +2,7 @@ package at.clanattack.settings
 
 import at.clanattack.bootstrap.provider.IServiceProvider
 import at.clanattack.xjkl.future.Future
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import kotlin.reflect.KClass
 
 interface ISettingServiceProvider : IServiceProvider {
@@ -12,12 +13,19 @@ interface ISettingServiceProvider : IServiceProvider {
 
     fun <T : Any> getSetting(key: String, clazz: KClass<T>) = this.getSettingAsync(key, clazz).getSync()
 
-    fun <T : Any> getSetting(key: String, default: T, clazz: KClass<T>) =
-        this.getSettingAsync(key, default, clazz).getSync()
+    @Deprecated("Use without class", ReplaceWith("getSetting(key, default)"))
+    @ScheduledForRemoval(inVersion = "0.5")
+    fun <T : Any> getSetting(key: String, default: T, clazz: KClass<T>) = this.getSetting(key, default)
+
+    fun <T : Any> getSetting(key: String, default: T) = this.getSettingAsync(key, default).getSync()
 
     fun <T : Any> getSettingAsync(key: String, clazz: KClass<T>): Future<T?>
 
-    fun <T : Any> getSettingAsync(key: String, default: T, clazz: KClass<T>): Future<T>
+    @Deprecated("Use without class", ReplaceWith("getSettingAsync(key, default)"))
+    @ScheduledForRemoval(inVersion = "0.5")
+    fun <T : Any> getSettingAsync(key: String, default: T, clazz: KClass<T>) = this.getSettingAsync(key, default)
+
+    fun <T : Any> getSettingAsync(key: String, default: T): Future<T>
 
 }
 
