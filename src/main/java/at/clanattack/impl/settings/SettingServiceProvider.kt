@@ -34,14 +34,14 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
     override fun <T : Any> getSettingAsync(key: String, clazz: KClass<T>) =
         this.getSettingFromDb(key, null, clazz.java)
 
-    override fun <T : Any> getSettingAsync(key: String, default: T, clazz: KClass<T>): Future<T> {
+    override fun <T : Any> getSettingAsync(key: String, default: T): Future<T> {
         val future = CompletableFuture<T>()
-        this.getSettingFromDb(key, default, clazz.java).then { future.complete(it!!) }
+        this.getSettingFromDb(key, default, default::class.java).then { future.complete(it!!) }
 
         return future
     }
 
-    private fun <T> getSettingFromDb(key: String, default: T?, clazz: Class<T>): Future<T?> {
+    private fun <T> getSettingFromDb(key: String, default: T?, clazz: Class<out T>): Future<T?> {
         val future = CompletableFuture<T?>()
         val setting = settingCache.getIfPresent(key)
         if (setting != null) return future.complete(setting.toT(clazz))
