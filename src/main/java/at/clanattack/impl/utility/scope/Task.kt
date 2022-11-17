@@ -2,17 +2,23 @@ package at.clanattack.impl.utility.scope
 
 import at.clanattack.utility.scope.ITask
 import org.bukkit.scheduler.BukkitTask
+import java.lang.IllegalStateException
 
-class Task(private val task: BukkitTask) : ITask {
+class Task : ITask {
+
+    var task: BukkitTask? = null
+
+    private val safeTask: BukkitTask
+        get() = task ?: throw IllegalStateException("Runnable must be initialized to run")
 
     override val id: Int
-        get() = task.taskId
+        get() = safeTask.taskId
 
     override val sync: Boolean
-        get() = task.isSync
+        get() = safeTask.isSync
 
     override val cancelled: Boolean
-        get() = task.isCancelled
+        get() = safeTask.isCancelled
 
-    override fun cancel() = task.cancel()
+    override fun cancel() = safeTask.cancel()
 }
