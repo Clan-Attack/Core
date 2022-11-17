@@ -12,6 +12,12 @@ class ScopeHandler(private val core: ICore) : IScopeHandler {
     private val plugin: JavaPlugin
         get() = core.javaPlugin
 
+    fun shutdown() {
+        Bukkit.getScheduler().pendingTasks
+            .filter { it.owner.name == "Clanattack-Core" }
+            .forEach { it.cancel() }
+    }
+
     private fun generateTask(task: ITask.() -> Unit, creator: (TaskRunnable) -> BukkitTask): ITask {
         val taskInstance = Task()
         val bukkitTask = creator(TaskRunnable(taskInstance, task))

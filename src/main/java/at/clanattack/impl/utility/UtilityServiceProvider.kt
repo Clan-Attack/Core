@@ -37,4 +37,8 @@ class UtilityServiceProvider(core: ICore) : AbstractServiceProvider(core), IUtil
         this.commandHandler.registerCommands()
     }
 
+    override fun disable() {
+        this.scopeHandler.shutdown()
+    }
+
 }
