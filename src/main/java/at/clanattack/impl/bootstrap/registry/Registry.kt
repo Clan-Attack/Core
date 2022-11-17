@@ -2,7 +2,7 @@ package at.clanattack.impl.bootstrap.registry
 
 import at.clanattack.xjkl.scope.asExpr
 
-open class Registry<T : Any>(private val possible: MutableList<Pair<List<Class<out Any>>, List<() -> Any>>>) {
+open class Registry<T : Any>(val possible: MutableList<Pair<List<Class<out Any>>, List<() -> Any>>>) {
 
     constructor(vararg possible: Pair<List<Class<out Any>>, List<() -> Any>>) : this(possible.toMutableList())
 
@@ -33,10 +33,11 @@ open class Registry<T : Any>(private val possible: MutableList<Pair<List<Class<o
         for ((types, instances) in this.possible) {
             try {
                 val constructor = `class`.getDeclaredConstructor(*types.toTypedArray())
-                val instance = constructor.newInstance(instances.map { it() })
+                val instance = constructor.newInstance(*instances.map { it() }.toTypedArray())
                 this.registerInstance(`class`, instance)
                 return
             } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
