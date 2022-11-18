@@ -1,33 +1,29 @@
 package at.clanattack.top.utility
 
-import at.clanattack.top.TopCore
+import at.clanattack.top.bootstrap.getServiceProvider
 import at.clanattack.utility.IUtilityServiceProvider
+import at.clanattack.utility.scope.IScopeHandler
+import at.clanattack.utility.scope.ITask
 
-fun later(delay: Long, task: () -> Unit) =
-    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.later(delay, task)
+private val scopeHandler: IScopeHandler
+    get() = getServiceProvider<IUtilityServiceProvider>().scopeHandler
 
-fun tickLater(task: () -> Unit) =
-    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.tickLater(task)
+fun later(delay: Long, task: ITask.() -> Unit) = scopeHandler.later(delay, task)
 
-fun timer(delay: Long, period: Long, task: () -> Unit) =
-    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.timer(delay, period, task)
+fun tickLater(task: ITask.() -> Unit) = scopeHandler.tickLater(task)
 
-fun timer(period: Long, task: () -> Unit) =
-    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.timer(period, task)
+fun timer(delay: Long, period: Long, task: ITask.() -> Unit) = scopeHandler.timer(delay, period, task)
 
-fun sync(task: () -> Unit) = TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.sync(task)
+fun timer(period: Long, task: ITask.() -> Unit) = scopeHandler.timer(period, task)
 
-fun laterAsync(delay: Long, task: () -> Unit) =
-    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.laterAsync(delay, task)
+fun sync(task: ITask.() -> Unit) = scopeHandler.sync(task)
 
-fun tickLaterAsync(task: () -> Unit) =
-    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.tickLaterAsync(task)
+fun laterAsync(delay: Long, task: ITask.() -> Unit) = scopeHandler.laterAsync(delay, task)
 
-fun timerAsync(delay: Long, period: Long, task: () -> Unit) =
-    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.timerAsync(delay, period, task)
+fun tickLaterAsync(task: ITask.() -> Unit) = scopeHandler.tickLaterAsync(task)
 
-fun timerAsync(period: Long, task: () -> Unit) =
-    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.timerAsync(period, task)
+fun timerAsync(delay: Long, period: Long, task: ITask.() -> Unit) = scopeHandler.timerAsync(delay, period, task)
 
-fun async(task: () -> Unit) =
-    TopCore.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.async(task)
+fun timerAsync(period: Long, task: ITask.() -> Unit) = scopeHandler.timerAsync(period, task)
+
+fun async(task: ITask.() -> Unit) = scopeHandler.async(task)

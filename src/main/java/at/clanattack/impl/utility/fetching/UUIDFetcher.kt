@@ -19,7 +19,7 @@ class UUIDFetcher : IUUIDFetcher {
     private val nameCache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.DAYS).build<UUID, String>()
 
     private val uuidUrl = "https://api.mojang.com/users/profiles/minecraft/%s?at=%d"
-    private val nameUrl = "https://api.mojang.com/user/profiles/%s/names"
+    private val nameUrl = "https://sessionserver.mojang.com/session/minecraft/profile/%s"
 
     override fun getUUID(name: String) = this.getUUIDAt(name, System.currentTimeMillis())
 
@@ -47,8 +47,7 @@ class UUIDFetcher : IUUIDFetcher {
         connection.readTimeout = 5000
 
         if (connection.responseCode != HttpURLConnection.HTTP_OK) return null
-        val data =
-            gson.fromJson(BufferedReader(InputStreamReader(connection.inputStream)), Array<UUIDData>::class.java).last()
+        val data = gson.fromJson(BufferedReader(InputStreamReader(connection.inputStream)), UUIDData::class.java)
 
         uuidCache.put(data.name.lowercase(), data.id)
         nameCache.put(data.id, data.name)

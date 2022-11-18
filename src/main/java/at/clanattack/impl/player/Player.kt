@@ -35,7 +35,7 @@ class Player(
 
     override val name: String
         get() = this.core.getServiceProvider(IUtilityServiceProvider::class).uuidFetcher.getName(this.uuid)
-            ?: throw java.lang.IllegalStateException("UUID doesn'T exist")
+            ?: throw java.lang.IllegalStateException("UUID doesn't exist")
 
     override val bukkit: Player?
         get() = Bukkit.getPlayer(this.uuid)

@@ -8,7 +8,7 @@ import at.clanattack.xjkl.scope.asExpr
 
 class AnnotationScanner : IAnnotationScanner {
 
-    private var loaders = mutableListOf<ClassLoader>()
+    val loaders = mutableListOf<ClassLoader>()
 
     fun addLoader(loader: ClassLoader) = asExpr { this.loaders.add(loader) }
 

@@ -52,7 +52,7 @@ object Actionbar {
                 return@timerAsync
             }
 
-            this.actionbar.forEach { (uuid, information) ->
+            this@Actionbar.actionbar.forEach { (uuid, information) ->
                 if (information.endTime < System.currentTimeMillis()) {
                     actionbar.remove(uuid)
                     return@forEach
