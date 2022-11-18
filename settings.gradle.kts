@@ -9,3 +9,5 @@ pluginManagement {
 
 
 include("Api")
+include("Library")
+include("Pack")
