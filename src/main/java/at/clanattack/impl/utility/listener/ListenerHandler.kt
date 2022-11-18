@@ -65,6 +65,7 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
             (core.annotationScanner as AnnotationScanner).loaders.map {
                 ClassGraph()
                     .overrideClassLoaders(it)
+                    .enableClassInfo()
                     .scan()
                     .getClassInfo(Event::class.java.name)
                     .subclasses

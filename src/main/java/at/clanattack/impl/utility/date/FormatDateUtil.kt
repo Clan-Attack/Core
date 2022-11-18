@@ -85,11 +85,8 @@ class FormatDateUtil(private val core: ICore) : IFormatDateUtil {
         return builder.toString().trim()
     }
 
-    private fun getName(i: Int, it: Long): String {
-        return if (it == 1L) this.core.getServiceProvider(IMessageServiceProvider::class)
-            .getStringMessage(names[i * 2 - 1]) else this.core.getServiceProvider(IMessageServiceProvider::class)
-            .getStringMessage(names[i * 2])
-    }
+    private fun getName(i: Int, it: Long) =
+        this.core.getServiceProvider(IMessageServiceProvider::class).getStringMessage(names[i + if (it == 1L) 0 else 1])
 
     private fun getDateDiff(start: Long, end: Long, full: Boolean): Array<Long> {
         val startCalendar = this.getCalendarWithMillis(start)
