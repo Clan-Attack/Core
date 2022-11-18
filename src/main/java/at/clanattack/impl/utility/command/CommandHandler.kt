@@ -1,21 +1,21 @@
 package at.clanattack.impl.utility.command
 
-import io.github.classgraph.ClassGraph
 import at.clanattack.bootstrap.ICore
+import at.clanattack.impl.bootstrap.registry.Registry
 import at.clanattack.impl.bootstrap.util.annotation.AnnotationScanner
 import at.clanattack.message.IMessageServiceProvider
 import at.clanattack.utility.command.Command
 import at.clanattack.utility.command.ICommandHandler
 import at.clanattack.utility.listener.ListenerTrigger
 import at.clanattack.xjkl.extention.inArray
+import io.github.classgraph.ClassGraph
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerCommandSendEvent
 
-class CommandHandler(private val core: ICore) : ICommandHandler {
+class CommandHandler(private val core: ICore) : Registry<Command>(ICore::class.java, { core }), ICommandHandler {
 
     private val whitelisted = arrayOf("stop", "rl")
-    private val instances = mutableMapOf<Class<*>, Any>()
     private val execution = mutableMapOf<String, CommandExecute>()
 
     fun registerCommands() {
@@ -35,8 +35,8 @@ class CommandHandler(private val core: ICore) : ICommandHandler {
             .map { it.loadClass() }
             .map { it.asSubclass(Command::class.java) }
             .forEach {
-                if (!this.register(it)) return@forEach
-                val instance = this.instances[it] as Command
+                createInstanceOrKeep(it)
+                val instance = getInstance(it) ?: return@forEach
 
                 if (!this.canRegister(instance.name, instance.aliases)) {
                     this.core.logger.error(
@@ -76,36 +76,17 @@ class CommandHandler(private val core: ICore) : ICommandHandler {
         }
     }
 
-    private fun register(clazz: Class<*>): Boolean {
-        if (clazz in this.instances) return true
-
-        val instance = try {
-            clazz.getDeclaredConstructor(ICore::class.java).newInstance(this.core)
-        } catch (e: NoSuchMethodException) {
-            try {
-                clazz.getDeclaredConstructor().newInstance()
-            } catch (e: NoSuchMethodException) {
-                this.core.logger.error(
-                    "Couldn't register command class ${clazz.simpleName} because the class " +
-                            "doesn't have any correct constructor."
-                )
-                null
-            }
-        } ?: return false
-
-        instances[clazz] = instance
-        return true
-    }
-
     private fun getCommand(name: String) = execution
         .asSequence()
         .firstOrNull { (targetName, execute) ->
             targetName == name || name.inArray(execute.aliases.toTypedArray())
         }?.value
 
-    override fun registerCommandInstance(instance: Any) {
-        this.instances[instance::class.java] = instance
-    }
+    override fun registerCommandInstance(instance: Any) =
+        if (instance is Command) registerInstance(instance)
+        else throw IllegalArgumentException("Only command can be registered")
+
+    override fun registerCommandInstance(instance: Command) = registerInstance(instance)
 
     @ListenerTrigger(PlayerCommandSendEvent::class)
     fun playerCommandSend(event: PlayerCommandSendEvent) {
@@ -114,10 +95,12 @@ class CommandHandler(private val core: ICore) : ICommandHandler {
                 .asSequence()
                 .filter { this.getCommand(it) == null && !it.inArray(this.whitelisted) }
                 .map { it to this.getCommand(it) }
-                .filter { (_, c) -> c == null ||
-                        c.permission == null ||
-                        c.permission == "" ||
-                        event.player.hasPermission(c.permission!!) }
+                .filter { (_, c) ->
+                    c == null ||
+                            c.permission == null ||
+                            c.permission == "" ||
+                            event.player.hasPermission(c.permission!!)
+                }
                 .map { it.first }
                 .toSet()
         )
@@ -133,8 +116,10 @@ class CommandHandler(private val core: ICore) : ICommandHandler {
 
         val bukkitCommand = Bukkit.getCommandMap().getCommand(command)
         if (bukkitCommand == null) {
-            event.player.sendMessage(this.core.getServiceProvider(IMessageServiceProvider::class)
-                .getMessage("core.utility.command.unknown", "command=>$command"))
+            event.player.sendMessage(
+                this.core.getServiceProvider(IMessageServiceProvider::class)
+                    .getMessage("core.utility.command.unknown", "command=>$command")
+            )
             event.isCancelled = true
             return
         }
@@ -143,8 +128,10 @@ class CommandHandler(private val core: ICore) : ICommandHandler {
         val permission = internalCommand.permission ?: return
 
         if (permission != "" && !event.player.hasPermission(permission)) {
-            event.player.sendMessage(this.core.getServiceProvider(IMessageServiceProvider::class)
-                .getMessage("core.utility.command.noPermission", "permission=>$permission"))
+            event.player.sendMessage(
+                this.core.getServiceProvider(IMessageServiceProvider::class)
+                    .getMessage("core.utility.command.noPermission", "permission=>$permission")
+            )
             event.isCancelled = true
         }
     }
