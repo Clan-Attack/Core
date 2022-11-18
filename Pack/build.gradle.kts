@@ -9,9 +9,3 @@ dependencies {
     api(project(":Api"))
     api(project(":Library"))
 }
-
-tasks {
-    jar {
-        archiveBaseName.set("Core")
-    }
-}
