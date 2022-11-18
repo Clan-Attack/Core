@@ -1,9 +1,9 @@
 plugins {
-    id 'java'
+    id("java")
 }
 
-group 'at.clanattack'
-version '0.5'
+group = "at.clanattack"
+version = "0.5.1"
 
 dependencies {
     // Bootstrap
@@ -12,6 +12,7 @@ dependencies {
 
     // Database
     api(files("lib/surreal.jar"))
+    api("org.java-websocket:Java-WebSocket:1.5.3")
 
     // Discord
     api("net.dv8tion:JDA:5.0.0-alpha.22")
@@ -21,4 +22,12 @@ dependencies {
     // Temporarily until jda-reactor:1.5.1 is officially released
     api("io.projectreactor:reactor-core:3.5.0")
     api("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.0")
+}
+
+bukkit {
+    main = "at.clanattack.library.Library"
+    name = "Clanattack-Library"
+    version = "0.5.1"
+    apiVersion = "1.19"
+    author = "CheeseTastisch"
 }

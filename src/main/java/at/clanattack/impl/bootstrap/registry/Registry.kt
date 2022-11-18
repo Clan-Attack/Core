@@ -36,9 +36,7 @@ open class Registry<T : Any>(val possible: MutableList<Pair<List<Class<out Any>>
                 val instance = constructor.newInstance(*instances.map { it() }.toTypedArray())
                 this.registerInstance(`class`, instance)
                 return
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            } catch (_: Exception) { }
         }
 
         throw IllegalStateException("Couldn't register $`class` because the class doesn't have the correct constructor.")

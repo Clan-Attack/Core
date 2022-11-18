@@ -9,25 +9,33 @@ plugins {
 }
 
 group = "at.clanattack"
-version = "0.5"
+version = "0.5.1"
 
 bukkit {
     main = "at.clanattack.impl.bootstrap.boot.Bootstrap"
     name = "Clanattack-Core"
-    version = "0.5"
+    version = "0.5.1"
     apiVersion = "1.19"
     author = "CheeseTastisch"
+    depend = listOf("Clanattack-Library")
 }
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
+configure(allprojects - project(":Api")) {
+    apply(plugin = "com.github.johnrengelman.shadow")
+}
+
+project(":Library") {
+    apply(plugin = "net.minecrell.plugin-yml.bukkit")
+}
+
 allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "java-library")
     apply(plugin = "io.papermc.paperweight.userdev")
-    apply(plugin = "com.github.johnrengelman.shadow")
 
     repositories {
         mavenCentral()
@@ -64,10 +72,15 @@ allprojects {
     }
 }
 
+tasks {
+    shadowJar {
+        dependencies {
+            exclude(dependency(".*:.*kotlin.*:.*"))
+        }
+    }
+}
+
 dependencies {
     // Api
     api(project(":Api"))
-
-    // Database
-    implementation("org.java-websocket:Java-WebSocket:1.5.3")
 }
