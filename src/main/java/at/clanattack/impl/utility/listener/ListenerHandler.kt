@@ -2,6 +2,7 @@ package at.clanattack.impl.utility.listener
 
 import at.clanattack.bootstrap.ICore
 import at.clanattack.impl.bootstrap.registry.Registry
+import at.clanattack.impl.bootstrap.util.annotation.AnnotationScanner
 import at.clanattack.utility.IUtilityServiceProvider
 import at.clanattack.utility.listener.IListenerHandler
 import at.clanattack.utility.listener.ListenerTrigger
@@ -61,11 +62,14 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
             val executor = EventExecutor { _, event -> fireEvent(event) }
             var counter = 0
 
-            ClassGraph()
-                .enableClassInfo()
-                .scan()
-                .getClassInfo(Event::class.java.name)
-                .subclasses
+            (core.annotationScanner as AnnotationScanner).loaders.map {
+                ClassGraph()
+                    .overrideClassLoaders(it)
+                    .scan()
+                    .getClassInfo(Event::class.java.name)
+                    .subclasses
+            }
+                .flatten()
                 .asSequence()
                 .filter { !it.isAbstract }
                 .forEach {
