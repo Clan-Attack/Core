@@ -9,14 +9,14 @@ import at.clanattack.utility.listener.ListenerTrigger
 import at.clanattack.xjkl.wait.Lock
 import io.github.classgraph.ClassGraph
 import org.bukkit.Bukkit
+import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.plugin.EventExecutor
-import java.lang.reflect.Method
 
 class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java, { core }), IListenerHandler {
-    
-    private val listeners = mutableMapOf<Class<out Event>, MutableList<Pair<Method, Boolean>>>()
+
+    private val listeners = mutableMapOf<Class<out Event>, MutableList<ListenerData>>()
 
     private var loadLock = Lock()
     private var registerLock = Lock()
@@ -43,7 +43,7 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
                     createInstanceOrKeep(declaringClass)
 
                     listeners.putIfAbsent(annotation.event.java, mutableListOf())
-                    listeners[annotation.event.java]!!.add(it to annotation.subevents)
+                    listeners[annotation.event.java]!!.add(ListenerData.populateData(it))
                 }
             core.logger.info("Loaded ${listeners.size} listeners.")
 
@@ -55,6 +55,11 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
     fun registerEvents() {
         this.core.getServiceProvider(IUtilityServiceProvider::class).scopeHandler.async {
             loadLock.await()
+
+            val sortedListeners =
+                listeners.map { (event, data) -> event to data.sortedBy { it.priority }.toMutableList() }.toMap()
+            listeners.clear()
+            sortedListeners.forEach { (event, data) -> listeners[event] = data }
 
             core.logger.info("Registering events...")
 
@@ -73,19 +78,13 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
                 .flatten()
                 .asSequence()
                 .filter { !it.isAbstract }
+                .map { it.loadClass().asSubclass(Event::class.java) }
+                .filter { it.methods.any { method -> method.parameterCount == 0 && method.name == "getHandlers" } }
+                .filter { shouldRegister(it) }
+                .distinct()
                 .forEach {
-                    val eventClass = it.loadClass().asSubclass(Event::class.java)
-                    if (!eventClass.declaredMethods
-                            .any { method -> method.parameterCount == 0 && method.name == "getHandlers" } ||
-                        listeners.none { (`class`, events) ->
-                            shouldRegister(
-                                eventClass,
-                                events.map { (_, subevents) -> `class` to subevents })
-                        }
-                    ) return@forEach
-
                     Bukkit.getPluginManager().registerEvent(
-                        eventClass,
+                        it,
                         listener,
                         EventPriority.NORMAL,
                         executor,
@@ -104,25 +103,35 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
     private fun fireEvent(event: Event) {
         val eventClass = event::class.java
 
-        this.listeners
+        val toBeCalled = this.listeners
             .filter { (`class`, _) -> `class`.isAssignableFrom(eventClass) }
-            .map { it.value.filter { (_, subevents) -> this.shouldCall(eventClass, it.key, subevents) } }
+            .map { (_, list) -> list.filter { shouldCall(eventClass, it) } }
             .flatten()
-            .map { it.first }
-            .forEach {
-                val instance = this.getInstance(it.declaringClass) ?: return@forEach
-                it.invoke(instance, event)
-            }
+
+        for (listenerData in toBeCalled) {
+            if (!shouldCall(event, listenerData)) continue
+
+            val instance = this.getInstance(listenerData.method.declaringClass) ?: continue
+            listenerData.method.invoke(instance, event)
+        }
     }
 
     @Suppress("BooleanMethodIsAlwaysInverted")
-    private fun shouldCall(event: Class<out Event>, methodEvent: Class<out Event>, subevents: Boolean): Boolean {
-        if (event == methodEvent) return true
-        return methodEvent.isAssignableFrom(event) && subevents
+    private fun shouldCall(event: Event, data: ListenerData): Boolean {
+        if (!shouldCall(event::class.java, data)) return false
+        if (event is Cancellable && (event as Cancellable).isCancelled && !data.executeCanceled) return false
+
+        return true
     }
 
-    private fun shouldRegister(event: Class<out Event>, events: List<Pair<Class<out Event>, Boolean>>) =
-        events.any { (methodEvent, subevents) -> shouldCall(event, methodEvent, subevents) }
+    @Suppress("BooleanMethodIsAlwaysInverted")
+    private fun shouldCall(event: Class<out Event>, data: ListenerData): Boolean {
+        if (data.event == event) return true
+        return data.includeSubevents && data.event.isAssignableFrom(event)
+    }
+
+    private fun shouldRegister(event: Class<out Event>) =
+        listeners.any { (_, list) -> list.any { shouldCall(event, it) } }
 
     override fun registerListenerInstance(instance: Any) = this.registerInstance(instance)
 
