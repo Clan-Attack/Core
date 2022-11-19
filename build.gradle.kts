@@ -4,17 +4,17 @@ plugins {
     `java-library`
     kotlin("jvm") version "1.7.21"
     id("io.papermc.paperweight.userdev") version "1.3.8"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
+    id("net.minecrell.plugin-yml.bukkit") version "0.6"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "at.clanattack"
-version = "0.5.2"
+version = "0.6"
 
 bukkit {
     main = "at.clanattack.impl.bootstrap.boot.Bootstrap"
     name = "Clanattack-Core"
-    version = "0.5.2"
+    version = "0.6"
     apiVersion = "1.19"
     author = "CheeseTastisch"
     depend = listOf("Clanattack-Library")
