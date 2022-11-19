@@ -28,6 +28,7 @@ class AnnotationScanner : IAnnotationScanner {
             .filter(filter)
             .map { it.loadClass() }
     }.flatten()
+        .distinct()
 
     override fun scanMethods(
         annotation: Class<out Annotation>,
@@ -49,6 +50,7 @@ class AnnotationScanner : IAnnotationScanner {
             .map { it.loadClassAndGetMethod() }
             .toList()
     }.flatten()
+        .distinct()
 
 
 }
