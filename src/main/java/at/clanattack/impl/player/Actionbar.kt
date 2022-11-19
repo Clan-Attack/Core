@@ -52,20 +52,23 @@ object Actionbar {
                 return@timerAsync
             }
 
+            val forRemoval = mutableListOf<UUID>()
             this@Actionbar.actionbar.forEach { (uuid, information) ->
                 if (information.endTime < System.currentTimeMillis()) {
-                    actionbar.remove(uuid)
+                    forRemoval.add(uuid)
                     return@forEach
                 }
 
                 val player = Bukkit.getPlayer(uuid)
                 if (player == null) {
-                    actionbar.remove(uuid)
+                    forRemoval.add(uuid)
                     return@forEach
                 }
 
                 player.sendActionBar(information.message)
             }
+
+            forRemoval.forEach { this@Actionbar.actionbar.remove(it) }
         }
     }
 
