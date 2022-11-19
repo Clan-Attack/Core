@@ -53,6 +53,7 @@ class SettingServiceProvider(core: ICore) : AbstractServiceProvider(core), ISett
                     return@then
                 }
 
+                settingCache.put(key, it[0].setting)
                 future.complete(it[0].setting.toT(clazz) ?: default)
             }
 
