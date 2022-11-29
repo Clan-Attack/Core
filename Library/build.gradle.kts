@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "at.clanattack"
-version = "0.6"
+version = "0.6.1"
 
 dependencies {
     // Bootstrap
@@ -27,7 +27,7 @@ dependencies {
 bukkit {
     main = "at.clanattack.library.Library"
     name = "Clanattack-Library"
-    version = "0.6"
+    version = "0.6.1"
     apiVersion = "1.19"
     author = "CheeseTastisch"
 }
