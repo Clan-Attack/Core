@@ -126,8 +126,10 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
 
     @Suppress("BooleanMethodIsAlwaysInverted")
     private fun shouldCall(event: Class<out Event>, data: ListenerData): Boolean {
-        if (data.event == event) return true
-        return data.includeSubevents && data.event.isAssignableFrom(event)
+        val handlerClass = event.getDeclaredMethod("getHandlerList").declaringClass
+
+        if (data.event == handlerClass) return true
+        return data.includeSubevents && data.event.isAssignableFrom(handlerClass)
     }
 
     private fun shouldRegister(event: Class<out Event>) =
