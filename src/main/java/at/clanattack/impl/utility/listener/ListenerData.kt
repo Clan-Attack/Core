@@ -6,6 +6,7 @@ import java.lang.reflect.Method
 
 data class ListenerData(
     val event: Class<out Event>,
+    val handlerClass: Class<out Event>,
     val priority: ListenerPriority,
     val executeCanceled: Boolean,
     val includeSubevents: Boolean,
@@ -16,6 +17,8 @@ data class ListenerData(
         @Suppress("DEPRECATION")
         fun populateData(method: Method) = ListenerData(
             method.getDeclaredAnnotation(ListenerTrigger::class.java).event.java,
+            method.getDeclaredAnnotation(ListenerTrigger::class.java).event.java
+                .getMethod("getHandlerList").declaringClass.asSubclass(Event::class.java),
             if (method.isAnnotationPresent(Priority::class.java))
                 method.getDeclaredAnnotation(Priority::class.java).priority else ListenerPriority.NORMAL,
             method.isAnnotationPresent(ExecuteCanceled::class.java),
