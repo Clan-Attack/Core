@@ -25,7 +25,7 @@ object BackingRegistry {
 
     fun getInstance(`class`: Class<out Any>) = registry[`class`]
 
-    inline fun <reified T : Any> getInstance(`class`: Class<out Any>) = getInstance(`class`).supplyNullable { it as T }
+    inline fun <reified T : Any> getTypedInstance(`class`: Class<out Any>) = getInstance(`class`).supplyNullable { it as T }
 
     fun hasInstance(`class`: Class<out Any>) = `class` in registry
 
@@ -69,7 +69,7 @@ open class Registry {
 
     constructor(`class`: Class<out Any>, get: () -> Any) : this(listOf(`class`) to listOf(get))
 
-    protected inline fun <reified T : Any> getInstance(`class`: Class<out T>) = BackingRegistry.getInstance<T>(`class`)
+    protected inline fun <reified T : Any> getInstance(`class`: Class<out T>) = BackingRegistry.getTypedInstance<T>(`class`)
 
     protected fun hasInstance(`class`: Class<out Any>) = BackingRegistry.hasInstance(`class`)
 
