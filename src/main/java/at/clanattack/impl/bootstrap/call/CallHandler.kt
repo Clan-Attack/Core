@@ -6,7 +6,7 @@ import at.clanattack.bootstrap.call.SystemState
 import at.clanattack.impl.bootstrap.registry.Registry
 import java.lang.reflect.Method
 
-class CallHandler(private val core: ICore) : Registry<Any>(ICore::class.java, { core }) {
+class CallHandler(private val core: ICore) : Registry() {
 
     private val calls = mutableMapOf<SystemState, MutableList<Pair<Method, Any>>>()
 

@@ -14,7 +14,7 @@ import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerCommandSendEvent
 
-class CommandHandler(private val core: ICore) : Registry<Command>(ICore::class.java, { core }), ICommandHandler {
+class CommandHandler(private val core: ICore) : Registry(), ICommandHandler {
 
     private val whitelisted = arrayOf("stop", "rl")
     private val execution = mutableMapOf<String, CommandExecute>()

@@ -15,7 +15,7 @@ import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.plugin.EventExecutor
 
-class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java, { core }), IListenerHandler {
+class ListenerHandler(private val core: ICore) : Registry(), IListenerHandler {
 
     private val listeners = mutableMapOf<Class<out Event>, MutableList<ListenerData>>()
 

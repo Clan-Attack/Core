@@ -1,37 +1,45 @@
 package at.clanattack.impl.bootstrap.registry
 
+import at.clanattack.bootstrap.ICore
+import at.clanattack.top.TopCore
+import at.clanattack.xjkl.extention.supplyNullable
 import at.clanattack.xjkl.scope.asExpr
 import java.lang.reflect.InvocationTargetException
 
-open class Registry<T : Any>(val possible: MutableList<Pair<List<Class<out Any>>, List<() -> Any>>>) {
+object BackingRegistry {
 
-    constructor(vararg possible: Pair<List<Class<out Any>>, List<() -> Any>>) : this(possible.toMutableList())
+    private val registry = mutableMapOf<Class<out Any>, Any>()
+    private val possibleConstructors = mutableMapOf<List<Class<out Any>>, List<() -> Any>>(
+        emptyList<Class<out Any>>() to emptyList(),
+        listOf<Class<out Any>>(ICore::class.java) to listOf { TopCore.core }
+    )
 
-    constructor(`class`: Class<out Any>, get: () -> Any) : this(listOf(`class`) to listOf(get))
+    fun addConstructor(parameters: List<Class<out Any>>, getters: List<() -> Any>) =
+        asExpr { this.possibleConstructors[parameters] = getters }
 
-    init {
-        possible.add(emptyList<Class<out Any>>() to emptyList())
-    }
+    fun addConstructors(list: List<Pair<List<Class<out Any>>, List<() -> Any>>>) =
+        asExpr { this.possibleConstructors.putAll(list) }
 
-    private val registry = mutableMapOf<Class<out T>, T>()
+    fun addConstructors(array: Array<out Pair<List<Class<out Any>>, List<() -> Any>>>) =
+        asExpr { this.possibleConstructors.putAll(array) }
 
-    protected fun getInstance(`class`: Class<out T>) = registry[`class`]
+    fun getInstance(`class`: Class<out Any>) = registry[`class`]
 
-    protected fun hasInstance(`class`: Class<out T>) = `class` in registry
+    inline fun <reified T : Any> getInstance(`class`: Class<out Any>) = getInstance(`class`).supplyNullable { it as T }
 
-    protected fun registerInstance(instance: T) = this.registerInstance(instance::class.java, instance)
+    fun hasInstance(`class`: Class<out Any>) = `class` in registry
 
-    protected fun registerInstanceOrKeep(instance: T) = this.registerInstanceOrKeep(instance::class.java, instance)
+    fun registerInstance(instance: Any) = this.registerInstance(instance::class.java, instance)
 
-    protected fun <U : T> registerInstance(`class`: Class<out U>, instance: U) = asExpr { registry[`class`] = instance }
+    fun registerInstance(`class`: Class<out Any>, instance: Any) = asExpr { registry[`class`] = instance }
 
-    protected fun <U : T> registerInstanceOrKeep(`class`: Class<out U>, instance: U) {
-        if (this.hasInstance(`class`)) return
-        registry[`class`] = instance
-    }
+    fun registerInstanceOrKeep(instance: Any) = this.registerInstanceOrKeep(instance::class.java, instance)
 
-    protected fun createInstance(`class`: Class<out T>) {
-        for ((types, instances) in this.possible) {
+    fun registerInstanceOrKeep(`class`: Class<out Any>, instance: Any) =
+        asExpr { registry.putIfAbsent(`class`, instance) }
+
+    fun createInstance(`class`: Class<out Any>) {
+        for ((types, instances) in this.possibleConstructors) {
             try {
                 val constructor = `class`.getDeclaredConstructor(*types.toTypedArray())
                 val instance = constructor.newInstance(*instances.map { it() }.toTypedArray())
@@ -39,15 +47,44 @@ open class Registry<T : Any>(val possible: MutableList<Pair<List<Class<out Any>>
                 return
             } catch (e: InvocationTargetException) {
                 throw e.cause ?: e
-            } catch (_: Exception) { }
+            } catch (_: Exception) {
+            }
         }
 
         throw IllegalStateException("Couldn't register $`class` because the class doesn't have the correct constructor.")
     }
 
-    protected fun createInstanceOrKeep(`class`: Class<out T>) {
+    fun createInstanceOrKeep(`class`: Class<out Any>) {
         if (this.hasInstance(`class`)) return
         this.createInstance(`class`)
     }
+
+}
+
+open class Registry {
+
+    constructor(vararg possible: Pair<List<Class<out Any>>, List<() -> Any>>) {
+        BackingRegistry.addConstructors(possible)
+    }
+
+    constructor(`class`: Class<out Any>, get: () -> Any) : this(listOf(`class`) to listOf(get))
+
+    protected inline fun <reified T : Any> getInstance(`class`: Class<out T>) = BackingRegistry.getInstance<T>(`class`)
+
+    protected fun hasInstance(`class`: Class<out Any>) = BackingRegistry.hasInstance(`class`)
+
+    protected fun registerInstance(instance: Any) = BackingRegistry.registerInstance(instance)
+
+    protected fun registerInstanceOrKeep(instance: Any) = BackingRegistry.registerInstanceOrKeep(instance)
+
+    protected fun registerInstance(`class`: Class<out Any>, instance: Any) =
+        BackingRegistry.registerInstance(`class`, instance)
+
+    protected fun registerInstanceOrKeep(`class`: Class<out Any>, instance: Any) =
+        BackingRegistry.registerInstanceOrKeep(`class`, instance)
+
+    protected fun createInstance(`class`: Class<out Any>) = BackingRegistry.createInstance(`class`)
+
+    protected fun createInstanceOrKeep(`class`: Class<out Any>) = BackingRegistry.createInstanceOrKeep(`class`)
 
 }
