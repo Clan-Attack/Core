@@ -8,6 +8,7 @@ import at.clanattack.utility.command.Command
 import at.clanattack.utility.command.ICommandHandler
 import at.clanattack.utility.listener.ListenerTrigger
 import at.clanattack.xjkl.extention.inArray
+import at.clanattack.xjkl.extention.supplyNullable
 import io.github.classgraph.ClassGraph
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
@@ -21,13 +22,13 @@ class CommandHandler(private val core: ICore) : Registry<Command>(ICore::class.j
     fun registerCommands() {
         this.core.logger.info("Registering commands...")
 
-        (this.core.annotationScanner as AnnotationScanner).loaders.map {
+        (this.core.annotationScanner as AnnotationScanner).loaders.mapNotNull {
             ClassGraph()
                 .overrideClassLoaders(it)
                 .enableClassInfo()
                 .scan()
                 .getClassInfo(Command::class.java.name)
-                .subclasses
+                .supplyNullable { classInfo -> classInfo.subclasses }
         }
             .flatten()
             .asSequence()
@@ -81,11 +82,6 @@ class CommandHandler(private val core: ICore) : Registry<Command>(ICore::class.j
         .firstOrNull { (targetName, execute) ->
             targetName == name || name.inArray(execute.aliases.toTypedArray())
         }?.value
-
-    @Deprecated("Only commands should be registered")
-    override fun registerCommandInstance(instance: Any) =
-        if (instance is Command) registerInstance(instance)
-        else throw IllegalArgumentException("Only command can be registered")
 
     override fun registerCommandInstance(instance: Command) = registerInstance(instance)
 

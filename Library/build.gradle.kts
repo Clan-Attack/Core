@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "at.clanattack"
-version = "0.6"
+version = "0.7"
 
 dependencies {
     // Bootstrap
@@ -15,19 +15,15 @@ dependencies {
     api("org.java-websocket:Java-WebSocket:1.5.3")
 
     // Discord
-    api("net.dv8tion:JDA:5.0.0-alpha.22")
-    api("com.github.minndevelopment:jda-ktx:0.9.6-alpha.22")
-    api("com.github.minndevelopment:jda-reactor:1.5.1")
-
-    // Temporarily until jda-reactor:1.5.1 is officially released
-    api("io.projectreactor:reactor-core:3.5.0")
-    api("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.0")
+    api("net.dv8tion:JDA:5.0.0-beta.1")
+    api("com.github.minndevelopment:jda-ktx:0.10.0-beta.1")
+    api("com.github.minndevelopment:jda-reactor:1.6.0")
 }
 
 bukkit {
     main = "at.clanattack.library.Library"
     name = "Clanattack-Library"
-    version = "0.6"
+    version = "0.7"
     apiVersion = "1.19"
     author = "CheeseTastisch"
 }

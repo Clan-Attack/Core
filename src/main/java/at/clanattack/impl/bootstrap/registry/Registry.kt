@@ -1,6 +1,7 @@
 package at.clanattack.impl.bootstrap.registry
 
 import at.clanattack.xjkl.scope.asExpr
+import java.lang.reflect.InvocationTargetException
 
 open class Registry<T : Any>(val possible: MutableList<Pair<List<Class<out Any>>, List<() -> Any>>>) {
 
@@ -36,6 +37,8 @@ open class Registry<T : Any>(val possible: MutableList<Pair<List<Class<out Any>>
                 val instance = constructor.newInstance(*instances.map { it() }.toTypedArray())
                 this.registerInstance(`class`, instance)
                 return
+            } catch (e: InvocationTargetException) {
+                throw e.cause ?: e
             } catch (_: Exception) { }
         }
 

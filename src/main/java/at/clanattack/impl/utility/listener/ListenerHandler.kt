@@ -6,6 +6,7 @@ import at.clanattack.impl.bootstrap.util.annotation.AnnotationScanner
 import at.clanattack.utility.IUtilityServiceProvider
 import at.clanattack.utility.listener.IListenerHandler
 import at.clanattack.utility.listener.ListenerTrigger
+import at.clanattack.xjkl.extention.supplyNullable
 import at.clanattack.xjkl.wait.Lock
 import io.github.classgraph.ClassGraph
 import org.bukkit.Bukkit
@@ -45,7 +46,7 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
                     listeners.putIfAbsent(annotation.event.java, mutableListOf())
                     listeners[annotation.event.java]!!.add(ListenerData.populateData(it))
                 }
-            core.logger.info("Loaded ${listeners.size} listeners.")
+            core.logger.info("Loaded ${listeners.map { it.value.size }.sum()} listeners.")
 
             loadLock.signal()
         }
@@ -67,13 +68,13 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
             val executor = EventExecutor { _, event -> fireEvent(event) }
             var counter = 0
 
-            (core.annotationScanner as AnnotationScanner).loaders.map {
+            (core.annotationScanner as AnnotationScanner).loaders.mapNotNull {
                 ClassGraph()
                     .overrideClassLoaders(it)
                     .enableClassInfo()
                     .scan()
                     .getClassInfo(Event::class.java.name)
-                    .subclasses
+                    .supplyNullable { classInfo -> classInfo.subclasses }
             }
                 .flatten()
                 .asSequence()
@@ -126,8 +127,12 @@ class ListenerHandler(private val core: ICore) : Registry<Any>(ICore::class.java
 
     @Suppress("BooleanMethodIsAlwaysInverted")
     private fun shouldCall(event: Class<out Event>, data: ListenerData): Boolean {
-        if (data.event == event) return true
-        return data.includeSubevents && data.event.isAssignableFrom(event)
+        val handlerClass = event.getMethod("getHandlerList").declaringClass
+
+        if (!data.event.isAssignableFrom(event)) return false
+        if (data.handlerClass == handlerClass) return true
+
+        return data.includeSubevents
     }
 
     private fun shouldRegister(event: Class<out Event>) =
