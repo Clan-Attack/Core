@@ -22,8 +22,7 @@ data class ListenerData(
             if (method.isAnnotationPresent(Priority::class.java))
                 method.getDeclaredAnnotation(Priority::class.java).priority else ListenerPriority.NORMAL,
             method.isAnnotationPresent(ExecuteCanceled::class.java),
-            method.isAnnotationPresent(IncludeSubevents::class.java) ||
-                    method.getDeclaredAnnotation(ListenerTrigger::class.java).subevents,
+            method.isAnnotationPresent(IncludeSubevents::class.java),
             method
         )
 
