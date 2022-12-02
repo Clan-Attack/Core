@@ -83,11 +83,6 @@ class CommandHandler(private val core: ICore) : Registry<Command>(ICore::class.j
             targetName == name || name.inArray(execute.aliases.toTypedArray())
         }?.value
 
-    @Deprecated("Only commands should be registered")
-    override fun registerCommandInstance(instance: Any) =
-        if (instance is Command) registerInstance(instance)
-        else throw IllegalArgumentException("Only command can be registered")
-
     override fun registerCommandInstance(instance: Command) = registerInstance(instance)
 
     @ListenerTrigger(PlayerCommandSendEvent::class)
