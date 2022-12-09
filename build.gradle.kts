@@ -45,7 +45,7 @@ allprojects {
 
     dependencies {
         paperDevBundle("1.19.2-R0.1-SNAPSHOT")
-        compileOnly("org.jetbrains:annotations:23.0.0")
+        compileOnly("org.jetbrains:annotations:23.1.0")
     }
 
     tasks {
