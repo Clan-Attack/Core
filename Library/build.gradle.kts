@@ -15,7 +15,7 @@ dependencies {
     api("org.java-websocket:Java-WebSocket:1.5.3")
 
     // Discord
-    api("net.dv8tion:JDA:5.0.0-beta.1")
+    api("net.dv8tion:JDA:5.0.0-beta.2")
     api("com.github.minndevelopment:jda-ktx:0.10.0-beta.1")
     api("com.github.minndevelopment:jda-reactor:1.6.0")
 }
