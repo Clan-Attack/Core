@@ -7,7 +7,7 @@ version = "0.7.1"
 
 dependencies {
     // Bootstrap
-    api("io.github.classgraph:classgraph:4.8.151")
+    api("io.github.classgraph:classgraph:4.8.152")
     api("com.google.code.gson:gson:2.10")
 
     // Database
